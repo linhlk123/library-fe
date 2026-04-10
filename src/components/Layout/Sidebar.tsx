@@ -1,5 +1,20 @@
 import React from 'react';
-import { BookOpen, Library as LibraryIcon, CreditCard, LogOut } from 'lucide-react';
+import {
+  BookOpen,
+  Library as LibraryIcon,
+  LogOut,
+  IdCard,
+  Users,
+  BookPlus,
+  Shapes,
+  Pencil,
+  ClipboardList,
+  Receipt,
+  ChartColumn,
+  SlidersHorizontal,
+  Shield,
+  UserPlus,
+} from 'lucide-react';
 import type { ViewState } from '../../App';
 
 interface SidebarProps {
@@ -11,9 +26,34 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: 'CATALOG' as const, label: 'Book Catalog', icon: BookOpen },
-  { id: 'LOANS' as const, label: 'My Loans', icon: LibraryIcon },
-  { id: 'FINES' as const, label: 'My Fines', icon: CreditCard },
+  { id: 'READER_CARD' as const, label: 'Lap the doc gia', icon: IdCard },
+  {
+    id: 'READER_TYPES' as const,
+    label: 'Nhap danh sach loai doc gia',
+    icon: Users,
+  },
+  { id: 'NEW_BOOK' as const, label: 'Tiep nhan sach moi', icon: BookPlus },
+  { id: 'CATEGORIES' as const, label: 'Nhap danh sach the loai', icon: Shapes },
+  { id: 'AUTHORS' as const, label: 'Nhap danh sach tac gia', icon: Pencil },
+  { id: 'CATALOG' as const, label: 'Tra cuu sach', icon: BookOpen },
+  {
+    id: 'BORROW_RETURN' as const,
+    label: 'Lap phieu muon tra sach',
+    icon: ClipboardList,
+  },
+  {
+    id: 'FINE_RECEIPT' as const,
+    label: 'Lap phieu thu tien phat',
+    icon: Receipt,
+  },
+  { id: 'REPORTS' as const, label: 'Lap bao cao', icon: ChartColumn },
+  {
+    id: 'REGULATIONS' as const,
+    label: 'Thay doi quy dinh',
+    icon: SlidersHorizontal,
+  },
+  { id: 'USER_ROLES' as const, label: 'Phan quyen nguoi dung', icon: Shield },
+  { id: 'USER_ACCOUNTS' as const, label: 'Tao tai khoan user', icon: UserPlus },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({
