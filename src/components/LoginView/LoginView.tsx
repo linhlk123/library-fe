@@ -45,7 +45,7 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
       setIsLoadingProfile(true);
       try {
         const profileRes = await axios.get<ApiResponse<NguoiDung>>(
-          'http://localhost:8080/api/v1/users/me',
+          'https://library-crbe.onrender.com/api/v1/users/me',
           {
             headers: {
               'Authorization': `Bearer ${token}`,
