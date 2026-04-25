@@ -1,11 +1,10 @@
 import React from 'react';
 import { Menu, Bell, User as UserIcon } from 'lucide-react';
-import type { User } from '../../types';
+import type { NguoiDung } from '../../types';
 import type { ViewState } from '../../App';
-import { navItems } from './Sidebar';
-
+import { navItems } from './navItems';
 interface HeaderProps {
-  user: User;
+  user: NguoiDung;
   currentView: ViewState;
   onOpenSidebar: () => void;
 }
@@ -21,7 +20,7 @@ const Header: React.FC<HeaderProps> = ({ user, currentView, onOpenSidebar }) => 
           <Menu className="h-6 w-6" />
         </button>
         <h1 className="text-xl font-semibold text-gray-800 hidden sm:block">
-          {navItems.find((i) => i.id === currentView)?.label}
+          {navItems.find((i: typeof navItems[0]) => i.id === currentView)?.label}
         </h1>
       </div>
 
@@ -34,10 +33,10 @@ const Header: React.FC<HeaderProps> = ({ user, currentView, onOpenSidebar }) => 
         <div className="flex items-center space-x-3 border-l border-gray-200 pl-4">
           <div className="hidden sm:flex flex-col items-end">
             <span className="text-sm font-medium text-gray-900">
-              {user.name}
+              {user.tenDangNhap}
             </span>
             <span className="text-xs text-indigo-600 font-semibold">
-              {user.role}
+              {user.vaiTro}
             </span>
           </div>
           <div className="h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700">
