@@ -1,4 +1,3 @@
-  import React from 'react';
   import { useAuthStore } from '../../stores';
   import { SectionContainer } from '../../components/shared/SectionContainer';
   import { Mail, Calendar, MapPin, User as UserIcon } from 'lucide-react';
@@ -112,10 +111,10 @@
                 <UserIcon className="text-indigo-600" size={24} />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Vai trò</p>
+               <p className="text-sm font-medium text-gray-600">Vai trò</p>
                 <div className="mt-1">
                   <span className="inline-flex rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
-                    {user.tenVaiTro === 'USER' ? 'Độc giả' : user.tenVaiTro}
+                    {user.vaiTro === 'USER' ? 'Độc giả' : user.vaiTro}
                   </span>
                 </div>
               </div>

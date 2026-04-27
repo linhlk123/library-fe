@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../../stores';
 import userApi from '../../services/userApi';
@@ -11,7 +10,8 @@ import {
   ChevronRight,
   Sparkles 
 } from 'lucide-react';
-import type { BookForUI } from '../../types';
+import type { BookForUI, DauSach } from '../../types';
+import type { LucideIcon } from 'lucide-react';
 
 // Skeleton Loading Component
 const StatCardSkeleton = () => (
@@ -69,7 +69,12 @@ export default function UserDashboardView() {
   const totalFines = overdueBorrowings.length * 5000;
 
   // Get recent books as recommendations
-  const recommendedBooks = allBooks.slice(0, 5);
+  const recommendedBooks = (allBooks as Array<DauSach & Partial<BookForUI>>).slice(0, 5).map((book) => ({
+    ...book,
+    totalCopies: 1,
+    availableCopies: 1,
+    status: 'AVAILABLE' as const,
+  }));
 
   // Stat Card Component
   const StatCard = ({ 
@@ -82,7 +87,7 @@ export default function UserDashboardView() {
   }: {
     title: string;
     value: number | string;
-    icon: unknown;
+    icon: LucideIcon;
     bgColor: string;
     textColor: string;
     iconBg: string;

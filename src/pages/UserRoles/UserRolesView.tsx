@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import SectionContainer from '../../components/shared/SectionContainer';
 import userApi from '../../services/userApi';
 import rolesApi from '../../services/rolesApi';
-import type { NguoiDung, ApiResponse } from '../../types';
+import type { NguoiDung } from '../../types';
 import type { VaiTro } from '../../services/rolesApi';
 
 interface UserRow extends NguoiDung {

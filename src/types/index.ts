@@ -27,6 +27,7 @@ export interface NguoiDung {
   ngaySinh: string;
   email: string;
   vaiTro: TenVaiTro;
+  diaChi?: string;
 }
 
 // Type alias for compatibility with stores
