@@ -36,6 +36,81 @@ const BookCardSkeleton = () => (
   </div>
 );
 
+// Stat Card Component
+const StatCard = ({ 
+  title, 
+  value, 
+  icon: Icon, 
+  bgColor, 
+  textColor, 
+  iconBg 
+}: {
+  title: string;
+  value: number | string;
+  icon: LucideIcon;
+  bgColor: string;
+  textColor: string;
+  iconBg: string;
+}) => (
+  <div className="rounded-2xl bg-white/70 backdrop-blur-md p-6 shadow-sm border border-white/50 hover:shadow-md transition-all duration-300 hover:border-white/80">
+    <div className="flex items-start justify-between">
+      <div>
+        <p className="text-sm font-medium text-gray-600">{title}</p>
+        <p className={`mt-2 text-3xl font-bold ${textColor}`}>{value}</p>
+      </div>
+      <div className={`rounded-xl ${iconBg} p-3`}>
+        <Icon className={`${bgColor}`} size={24} />
+      </div>
+    </div>
+  </div>
+);
+
+// Book Recommendation Card
+const BookRecommendCard = ({ book }: { book: BookForUI }) => (
+  <button
+    onClick={() => {}}
+    className="group rounded-xl bg-white/70 backdrop-blur-md overflow-hidden shadow-sm border border-white/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 hover:border-indigo-200 flex flex-col"
+  >
+    {/* Book cover placeholder */}
+    <div className={`h-40 w-full bg-gray-200 relative flex-shrink-0`}>
+      {book.anhBiaUrl ? (
+        <img
+          src={book.anhBiaUrl}
+          alt={book.tenDauSach}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+          Không có ảnh bìa
+        </div>
+      )}
+      {book.theLoai && (
+        <div className="absolute top-2 left-2">
+          <span className="bg-black/60 backdrop-blur-sm text-white text-[9px] uppercase font-bold px-2 py-1 rounded">
+            {book.theLoai.tenTheLoai}
+          </span>
+        </div>
+      )}
+    </div>
+
+    {/* Book info */}
+    <div className="p-4 flex-1">
+      <h3 className="font-semibold text-gray-900 line-clamp-2 text-sm">
+        {book.tenDauSach}
+      </h3>
+      {book.tacGiaList && book.tacGiaList.length > 0 && (
+        <p className="mt-1 text-xs text-gray-500 line-clamp-1">
+          {book.tacGiaList.map((a) => a.tenTacGia).join(', ')}
+        </p>
+      )}
+      <div className="mt-3 flex items-center text-indigo-600 text-xs font-medium">
+        <span>Khám phá</span>
+        <ChevronRight size={14} className="ml-1" />
+      </div>
+    </div>
+  </button>
+);
+
 export default function UserDashboardView() {
   const { user } = useAuthStore();
 
@@ -74,82 +149,8 @@ export default function UserDashboardView() {
     totalCopies: 1,
     availableCopies: 1,
     status: 'AVAILABLE' as const,
-  }));
-
-  // Stat Card Component
-  const StatCard = ({ 
-    title, 
-    value, 
-    icon: Icon, 
-    bgColor, 
-    textColor, 
-    iconBg 
-  }: {
-    title: string;
-    value: number | string;
-    icon: LucideIcon;
-    bgColor: string;
-    textColor: string;
-    iconBg: string;
-  }) => (
-    <div className="rounded-2xl bg-white/70 backdrop-blur-md p-6 shadow-sm border border-white/50 hover:shadow-md transition-all duration-300 hover:border-white/80">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className={`mt-2 text-3xl font-bold ${textColor}`}>{value}</p>
-        </div>
-        <div className={`rounded-xl ${iconBg} p-3`}>
-          <Icon className={`${bgColor}`} size={24} />
-        </div>
-      </div>
-    </div>
-  );
-
-  // Book Recommendation Card
-  const BookRecommendCard = ({ book }: { book: BookForUI }) => (
-    <button
-      onClick={() => {}}
-      className="group rounded-xl bg-white/70 backdrop-blur-md overflow-hidden shadow-sm border border-white/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 hover:border-indigo-200 flex flex-col"
-    >
-      {/* Book cover placeholder */}
-      <div className={`h-40 w-full bg-gray-200 relative flex-shrink-0`}>
-        {book.anhBiaUrl ? (
-          <img
-            src={book.anhBiaUrl}
-            alt={book.tenDauSach}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-            Không có ảnh bìa
-          </div>
-        )}
-        {book.theLoai && (
-          <div className="absolute top-2 left-2">
-            <span className="bg-black/60 backdrop-blur-sm text-white text-[9px] uppercase font-bold px-2 py-1 rounded">
-              {book.theLoai.tenTheLoai}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Book info */}
-      <div className="p-4 flex-1">
-        <h3 className="font-semibold text-gray-900 line-clamp-2 text-sm">
-          {book.tenDauSach}
-        </h3>
-        {book.tacGiaList && book.tacGiaList.length > 0 && (
-          <p className="mt-1 text-xs text-gray-500 line-clamp-1">
-            {book.tacGiaList.map((a) => a.tenTacGia).join(', ')}
-          </p>
-        )}
-        <div className="mt-3 flex items-center text-indigo-600 text-xs font-medium">
-          <span>Khám phá</span>
-          <ChevronRight size={14} className="ml-1" />
-        </div>
-      </div>
-    </button>
-  );
+    tacGiaList: book.tacGiaList ?? [],
+  })) as BookForUI[];
 
   const isLoading = borrowingsLoading || booksLoading;
 
