@@ -81,8 +81,8 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
   return (
     <div className="w-full max-w-md">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
-        <p className="text-gray-600 mt-2 text-sm">Join our library community</p>
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Create Account</h2>
+        <p className="text-emerald-600/70 mt-2 text-sm font-medium">Join our library community</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -162,7 +162,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         <button
           type="submit"
           disabled={signupMutation.isPending}
-          className="w-full py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:from-blue-400 disabled:to-indigo-400 disabled:cursor-not-allowed font-medium transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+          className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:from-emerald-600 hover:to-emerald-700 disabled:from-emerald-300 disabled:to-emerald-400 disabled:cursor-not-allowed font-semibold transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200"
         >
           {signupMutation.isPending ? (
             <>
@@ -179,13 +179,13 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
       </form>
 
       <div className="mt-6 text-center">
-        <p className="text-gray-600 text-sm">
+        <p className="text-emerald-600/70 text-sm font-medium">
           Already have an account?{' '}
           <button
             type="button"
             onClick={onSwitchToLogin}
             disabled={signupMutation.isPending}
-            className="text-blue-600 hover:text-blue-700 font-semibold disabled:text-blue-400 transition-colors"
+            className="text-emerald-600 hover:text-emerald-700 font-semibold disabled:text-emerald-400 transition-colors"
           >
             Login here
           </button>

@@ -7,10 +7,12 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      '/api': {
+      '/': {
         target: 'https://library-crbe.onrender.com',
         changeOrigin: true,
       }
     }
   }
 })
+
+

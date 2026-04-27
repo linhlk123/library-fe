@@ -115,12 +115,12 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
     <div className="w-full max-w-md">
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
-          <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg">
+          <div className="p-4 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-lg">
             <LogIn className="text-white" size={32} />
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-        <p className="text-gray-600 mt-2">Sign in to your library account</p>
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">Welcome Back</h1>
+        <p className="text-emerald-600/70 mt-2 font-medium">Sign in to your library account</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -152,7 +152,7 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
         <button
           type="submit"
           disabled={loginMutation.isPending || isLoadingProfile}
-          className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:from-blue-400 disabled:to-indigo-400 disabled:cursor-not-allowed font-medium transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+          className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:from-emerald-600 hover:to-emerald-700 disabled:from-emerald-300 disabled:to-emerald-400 disabled:cursor-not-allowed font-semibold transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200"
         >
           {loginMutation.isPending || isLoadingProfile ? (
             <>
@@ -171,10 +171,10 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
       <div className="mt-6 space-y-4">
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
+            <div className="w-full border-t border-emerald-100"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Or</span>
+            <span className="px-2 bg-white text-emerald-600/60 font-medium">Or</span>
           </div>
         </div>
 
@@ -182,14 +182,14 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
           type="button"
           onClick={onSwitchToRegister}
           disabled={loginMutation.isPending || isLoadingProfile}
-          className="w-full py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2.5 px-4 border-2 border-emerald-100 rounded-xl text-emerald-700 hover:border-emerald-300 hover:bg-emerald-50 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Create New Account
         </button>
       </div>
 
-      <p className="text-center text-xs text-gray-500 mt-6">
-        Demo credentials: admin / Admin@123
+      <p className="text-center text-xs text-emerald-600/50 mt-6 font-medium">
+        Role Staff: staff / Staff@123
       </p>
     </div>
   );
