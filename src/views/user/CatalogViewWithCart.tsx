@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import userApi from '../../services/userApi';
 import { SectionContainer } from '../../components/shared/SectionContainer';
@@ -242,25 +242,49 @@ export default function CatalogViewWithCart() {
   const { addNotification } = useUIStore();
 
   // Fetch all data
-  const { data: booksData, isLoading: booksLoading } = useQuery({
+  const { data: booksData, isLoading: booksLoading, isError: booksError } = useQuery({
     queryKey: ['dausach'],
-    queryFn: () => userApi.getAllDauSach(),
+    queryFn: async () => {
+      console.log('[CatalogView] Fetching dausach...');
+      const res = await userApi.getAllDauSach();
+      console.log('[CatalogView] dausach loaded:', res.data?.result?.length || 0);
+      return res;
+    },
+    retry: 2,
   });
 
-  const { data: sachData, isLoading: sachLoading, isFetching: sachFetching } = useQuery({
+  const { data: sachData, isLoading: sachLoading, isFetching: sachFetching, isError: sachError } = useQuery({
     queryKey: ['sach', currentPage, pageSize],
-    queryFn: () => userApi.getAllSachPaginated(currentPage, pageSize),
+    queryFn: async () => {
+      console.log('[CatalogView] Fetching sach (page', currentPage, ', size', pageSize, ')');
+      const res = await userApi.getAllSachPaginated(currentPage, pageSize);
+      console.log('[CatalogView] sach loaded:', res.data?.result?.content?.length || 0);
+      return res;
+    },
     placeholderData: keepPreviousData,
+    retry: 2,
   });
 
-  const { data: cuonSachData, isLoading: cuonSachLoading } = useQuery({
+  const { data: cuonSachData, isLoading: cuonSachLoading, isError: cuonSachError } = useQuery({
     queryKey: ['cuonsach'],
-    queryFn: () => userApi.getAllCuonSach(),
+    queryFn: async () => {
+      console.log('[CatalogView] Fetching cuonsach...');
+      const res = await userApi.getAllCuonSach();
+      console.log('[CatalogView] cuonsach loaded:', res.data?.result?.length || 0);
+      return res;
+    },
+    retry: 2,
   });
 
-  const { data: categoriesData, isLoading: categoriesLoading } = useQuery({
+  const { data: categoriesData, isLoading: categoriesLoading, isError: categoriesError } = useQuery({
     queryKey: ['categories'],
-    queryFn: () => userApi.getAllCategories(),
+    queryFn: async () => {
+      console.log('[CatalogView] Fetching categories...');
+      const res = await userApi.getAllCategories();
+      console.log('[CatalogView] categories loaded:', res.data?.result?.length || 0);
+      return res;
+    },
+    retry: 2,
   });
 
   const dauSachList = useMemo(() => booksData?.data?.result ?? [], [booksData]);
@@ -342,11 +366,23 @@ export default function CatalogViewWithCart() {
   }, [books, searchTerm, selectedCategory]);
 
   const isLoading = booksLoading || sachLoading || cuonSachLoading || categoriesLoading;
+  const hasError = booksError || sachError || cuonSachError || categoriesError;
   const totalPages = sachPage.totalPages;
   const totalElements = sachPage.totalElements;
   const startItem = totalElements === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endItem = totalElements === 0 ? 0 : Math.min(currentPage * pageSize, totalElements);
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  // Log errors
+  useEffect(() => {
+    if (hasError) {
+      console.error('[CatalogView] Data loading errors detected');
+      addNotification({
+        type: 'ERROR',
+        message: 'Lỗi khi tải dữ liệu sách. Vui lòng tải lại trang.',
+      });
+    }
+  }, [hasError, addNotification]);
 
   const handleAddToCart = (book: BookForUI) => {
     const result = addToCart({
@@ -503,6 +539,24 @@ export default function CatalogViewWithCart() {
               {[...Array(8)].map((_, i) => (
                 <BookCardSkeleton key={i} />
               ))}
+            </div>
+          ) : hasError ? (
+            <div className="text-center py-16">
+              <div className="inline-flex rounded-full bg-red-100 p-4 mb-4">
+                <AlertCircle className="text-red-400" size={48} />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mt-4">
+                Không thể tải dữ liệu sách
+              </h3>
+              <p className="text-gray-600 mt-2">
+                Vui lòng kiểm tra kết nối và tải lại trang
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-6 px-6 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-all duration-300 hover:shadow-lg"
+              >
+                Tải lại trang
+              </button>
             </div>
           ) : filteredBooks.length === 0 ? (
             <div className="text-center py-16">

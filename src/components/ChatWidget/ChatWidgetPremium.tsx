@@ -87,14 +87,29 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ role = 'USER' }) => {
     loadingAbortRef.current = abortController;
 
     try {
-      const response = await axios.post(
-        '/api/v1/ai-chat',
-        { message: currentInput },
-        {
-          signal: abortController.signal,
-          timeout: 20000,
-        }
-      );
+      // Try multiple endpoints for compatibility
+      let response;
+      try {
+        response = await axios.post(
+          '/api/v1/ai-chat',
+          { message: currentInput },
+          {
+            signal: abortController.signal,
+            timeout: 20000,
+          }
+        );
+      } catch (err) {
+        // Fallback to alternative endpoint
+        console.log('[ChatWidget] Trying alternative AI endpoint...');
+        response = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
+          { message: currentInput },
+          {
+            signal: abortController.signal,
+            timeout: 20000,
+          }
+        );
+      }
 
       if (response.data?.reply) {
         const botMsg: ChatMessage = {
@@ -108,9 +123,10 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ role = 'USER' }) => {
     } catch (err) {
       if (axios.isCancel(err)) return;
       
+      console.error('[ChatWidget] Error:', err);
       const errorMsg: ChatMessage = {
         id: Date.now().toString(),
-        text: 'BiblioBot đang bận sắp xếp sách, bạn thử lại sau nhé! 😅',
+        text: 'BiblioBot đang bận sắp xếp sách, bạn thử lại sau nhé! 😅 (Tip: Hãy thử ghi ngắn gọn hơn hoặc hỏi về thể loại sách 📚)',
         sender: 'BOT',
         timestamp: new Date(),
       };

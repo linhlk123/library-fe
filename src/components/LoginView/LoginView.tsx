@@ -135,7 +135,7 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
         {/* Username Field */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200 translate-y-1.25">
               <User size={18} />
             </div>
             <TextInput
@@ -156,7 +156,7 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
         {/* Password Field */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200 translate-y-1.25">
               <Lock size={18} />
             </div>
             <TextInput

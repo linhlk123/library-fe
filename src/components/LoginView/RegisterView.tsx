@@ -100,7 +100,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Full Name */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200 translate-y-1.25">
               <User size={18} />
             </div>
             <TextInput
@@ -120,7 +120,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Username */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200 translate-y-1.25">
               <User size={18} />
             </div>
             <TextInput
@@ -141,7 +141,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Email */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200 translate-y-1.25">
               <Mail size={18} />
             </div>
             <TextInput
@@ -163,7 +163,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Date of Birth */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200 translate-y-1.25">
               <Calendar size={18} />
             </div>
             <TextInput
@@ -183,7 +183,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Password */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200 translate-y-1.25">
               <Lock size={18} />
             </div>
             <TextInput
@@ -205,7 +205,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Confirm Password */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200 translate-y-1.25">
               <Lock size={18} />
             </div>
             <TextInput
