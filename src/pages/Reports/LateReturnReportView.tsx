@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Printer, AlertTriangle, Calendar } from 'lucide-react';
 import SectionContainer from '../../components/shared/SectionContainer';
 import reportsApi from '../../services/reportsApi';
@@ -32,27 +32,36 @@ export default function LateReturnReportView() {
       const response = await reportsApi.overdueReport.getByDate(selectedDate);
       const overdueBooks = (response.data.result ?? []) as BCSachTraTre[];
 
-      // Format data for display
-      const formattedData: LateBookDetail[] = overdueBooks.map((book) => ({
-        id: `${book.ngay}-${book.maCuonSach}`,
-        tenSach: book.cuonSach?.dausach?.tenDauSach || `Cuốn #${book.maCuonSach}`,
-        ngayMuon: new Date(book.ngay).toLocaleDateString('vi-VN', {
-          year: '2-digit',
-          month: '2-digit',
-          day: '2-digit',
-        }),
-        soNgayTraTre: book.soNgayTraTre,
-      }));
+// Format data for display
+      const formattedData: LateBookDetail[] = overdueBooks.map((book) => {
+        // Kiểm tra xem cuonSach có tồn tại không để tránh lỗi runtime
+        const bookName = book.cuonSach?.dauSach?.tenDauSach 
+          || book.cuonSach?.maCuonSach 
+          || `Cuốn #${book.maCuonSach}`;
+
+        return {
+          id: `${book.ngay}-${book.maCuonSach}`,
+          tenSach: bookName,
+          ngayMuon: book.ngay 
+            ? new Date(book.ngay).toLocaleDateString('vi-VN', {
+                year: 'numeric', // Nên dùng numeric cho rõ ràng hơn 2-digit
+                month: '2-digit',
+                day: '2-digit',
+              })
+            : 'N/A',
+          soNgayTraTre: book.soNgayTraTre || 0, // Tránh trường hợp null/undefined
+        };
+      });
 
       setReportData(formattedData);
     } catch (err) {
-      const error = err as Record<string, unknown>;
+      // Ép kiểu Error để lấy được message chính xác
+      const error = err as Error;
       console.error('Failed to fetch report:', error.message);
       setReportData([]);
     } finally {
       setLoading(false);
     }
-  };
 
   const handlePrint = () => {
     window.print();
@@ -247,4 +256,5 @@ export default function LateReturnReportView() {
       `}</style>
     </SectionContainer>
   );
+}
 }

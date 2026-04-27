@@ -29,6 +29,9 @@ export interface NguoiDung {
   vaiTro: TenVaiTro;
 }
 
+// Type alias for compatibility with stores
+export type User = NguoiDung;
+
 export interface AuthTokenResponse {
   token: string;
   exToken?: string;
