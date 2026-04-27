@@ -7,7 +7,7 @@ import { validateForm, signupSchema } from '../../lib/validation';
 import { TextInput } from '../shared/FormField';
 import { Loader } from '../shared/Loader';
 import type { SignupInput } from '../../lib/validation';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Mail, User, Lock, Calendar } from 'lucide-react';
 
 interface RegisterViewProps {
   onSwitchToLogin: () => void;
@@ -79,115 +79,192 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
   };
 
   return (
-    <div className="w-full max-w-md">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Create Account</h2>
-        <p className="text-emerald-600/70 mt-2 text-sm font-medium">Join our library community</p>
+    <div className="w-full space-y-8">
+      {/* Header Section */}
+      <div className="space-y-3 pb-8 border-b border-slate-200/50">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/20">
+          <Mail className="text-white" size={24} />
+        </div>
+        <div className="pt-2">
+          <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+            Create Account
+          </h1>
+          <p className="text-slate-500 mt-2 font-medium text-base">
+            Join our community and start exploring
+          </p>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <TextInput
-          label="Full Name"
-          name="hoTen"
-          value={formData.hoTen}
-          onChange={handleChange}
-          error={errors.hoTen}
-          placeholder="Your full name"
-          disabled={signupMutation.isPending}
-          required
-        />
+      {/* Form Section */}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Full Name */}
+        <div className="group">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <User className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            </div>
+            <TextInput
+              label="Full Name"
+              name="hoTen"
+              value={formData.hoTen}
+              onChange={handleChange}
+              error={errors.hoTen}
+              placeholder="Your full name"
+              disabled={signupMutation.isPending}
+              required
+              className="pl-12 bg-slate-50/50 border-slate-200"
+            />
+          </div>
+        </div>
 
-        <TextInput
-          label="Username"
-          name="tenDangNhap"
-          value={formData.tenDangNhap}
-          onChange={handleChange}
-          error={errors.tenDangNhap}
-          placeholder="3-50 chars, alphanumeric + underscore"
-          disabled={signupMutation.isPending}
-          autoComplete="username"
-          required
-        />
+        {/* Username */}
+        <div className="group">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <User className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            </div>
+            <TextInput
+              label="Username"
+              name="tenDangNhap"
+              value={formData.tenDangNhap}
+              onChange={handleChange}
+              error={errors.tenDangNhap}
+              placeholder="3-50 chars, alphanumeric"
+              disabled={signupMutation.isPending}
+              autoComplete="username"
+              required
+              className="pl-12 bg-slate-50/50 border-slate-200"
+            />
+          </div>
+        </div>
 
-        <TextInput
-          label="Email"
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          error={errors.email}
-          placeholder="your.email@example.com"
-          disabled={signupMutation.isPending}
-          autoComplete="email"
-          required
-        />
+        {/* Email */}
+        <div className="group">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Mail className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            </div>
+            <TextInput
+              label="Email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              error={errors.email}
+              placeholder="your.email@example.com"
+              disabled={signupMutation.isPending}
+              autoComplete="email"
+              required
+              className="pl-12 bg-slate-50/50 border-slate-200"
+            />
+          </div>
+        </div>
 
-        <TextInput
-          label="Date of Birth"
-          type="date"
-          name="ngaySinh"
-          value={formData.ngaySinh}
-          onChange={handleChange}
-          error={errors.ngaySinh}
-          disabled={signupMutation.isPending}
-          required
-        />
+        {/* Date of Birth */}
+        <div className="group">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Calendar className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            </div>
+            <TextInput
+              label="Date of Birth"
+              type="date"
+              name="ngaySinh"
+              value={formData.ngaySinh}
+              onChange={handleChange}
+              error={errors.ngaySinh}
+              disabled={signupMutation.isPending}
+              required
+              className="pl-12 bg-slate-50/50 border-slate-200"
+            />
+          </div>
+        </div>
 
-        <TextInput
-          label="Mật khẩu"
-          type="password"
-          name="matKhau"
-          value={formData.matKhau}
-          onChange={handleChange}
-          error={errors.matKhau}
-          placeholder="Min 8 chars, uppercase, digit, special char"
-          disabled={signupMutation.isPending}
-          autoComplete="new-matKhau"
-          required
-        />
+        {/* Password */}
+        <div className="group">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Lock className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            </div>
+            <TextInput
+              label="Password"
+              type="password"
+              name="matKhau"
+              value={formData.matKhau}
+              onChange={handleChange}
+              error={errors.matKhau}
+              placeholder="Min 8 chars, uppercase, digit, special char"
+              disabled={signupMutation.isPending}
+              autoComplete="new-password"
+              required
+              className="pl-12 bg-slate-50/50 border-slate-200"
+            />
+          </div>
+        </div>
 
-        <TextInput
-          label="Confirm matKhau"
-          type="password"
-          name="confirmmatKhau"
-          value={formData.confirmmatKhau}
-          onChange={handleChange}
-          error={errors.confirmmatKhau}
-          placeholder="Confirm your matKhau"
-          disabled={signupMutation.isPending}
-          autoComplete="new-matKhau"
-          required
-        />
+        {/* Confirm Password */}
+        <div className="group">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Lock className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            </div>
+            <TextInput
+              label="Confirm Password"
+              type="password"
+              name="confirmmatKhau"
+              value={formData.confirmmatKhau}
+              onChange={handleChange}
+              error={errors.confirmmatKhau}
+              placeholder="Confirm your password"
+              disabled={signupMutation.isPending}
+              autoComplete="new-password"
+              required
+              className="pl-12 bg-slate-50/50 border-slate-200"
+            />
+          </div>
+        </div>
 
+        {/* Create Account Button */}
         <button
           type="submit"
           disabled={signupMutation.isPending}
-          className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:from-emerald-600 hover:to-emerald-700 disabled:from-emerald-300 disabled:to-emerald-400 disabled:cursor-not-allowed font-semibold transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200"
+          className="w-full py-3 px-4 mt-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:from-emerald-600 hover:to-emerald-700 disabled:from-slate-300 disabled:to-slate-300 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 group"
         >
           {signupMutation.isPending ? (
             <>
               <Loader size="sm" />
-              Creating account...
+              <span>Creating account...</span>
             </>
           ) : (
             <>
-              Create Account
-              <ChevronRight size={18} />
+              <span>Create Account</span>
+              <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
             </>
           )}
         </button>
       </form>
 
-      <div className="mt-6 text-center">
-        <p className="text-emerald-600/70 text-sm font-medium">
+      {/* Divider */}
+      <div className="relative py-2">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-slate-200"></div>
+        </div>
+        <div className="relative flex justify-center">
+          <span className="px-3 text-xs font-medium text-slate-400 bg-white">or</span>
+        </div>
+      </div>
+
+      {/* Login Link */}
+      <div className="text-center">
+        <p className="text-slate-600 text-sm font-medium">
           Already have an account?{' '}
           <button
             type="button"
             onClick={onSwitchToLogin}
             disabled={signupMutation.isPending}
-            className="text-emerald-600 hover:text-emerald-700 font-semibold disabled:text-emerald-400 transition-colors"
+            className="text-emerald-600 hover:text-emerald-700 font-semibold disabled:text-slate-300 transition-colors duration-200"
           >
-            Login here
+            Sign In
           </button>
         </p>
       </div>
