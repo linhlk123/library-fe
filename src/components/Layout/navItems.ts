@@ -1,7 +1,5 @@
 import {
   BookOpen,
-  Library as LibraryIcon,
-  LogOut,
   IdCard,
   Users,
   BookPlus,

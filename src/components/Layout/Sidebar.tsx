@@ -8,7 +8,6 @@ import type { ViewState } from '../../App';
 import { useRole } from '../../hooks/useRole';
 import { navItems } from './navItems';
 import { staffApi } from '../../services/staffApi';
-import { isPendingBorrowStatus } from '../../utils/borrowStatus';
 
 interface SidebarProps {
   currentView: ViewState;
@@ -31,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     queryKey: ['staff-borrow-pending-count'],
     queryFn: async () => {
       const response = await staffApi.borrowSlips.getCountPending();
-      return response.data;
+      return response.data.result ?? 0;
     },
     refetchInterval: 10000,
     staleTime: 5000,

@@ -8,7 +8,6 @@ import {
   Info,
   AlertTriangle,
   Trash2,
-  MoreVertical,
 } from 'lucide-react';
 import type { ThongBao } from '../../types';
 

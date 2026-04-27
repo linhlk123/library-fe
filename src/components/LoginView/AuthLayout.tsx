@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import LoginView from './LoginView';
 import RegisterView from './RegisterView';
 

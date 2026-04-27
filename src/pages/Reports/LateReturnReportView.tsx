@@ -35,9 +35,7 @@ export default function LateReturnReportView() {
 // Format data for display
       const formattedData: LateBookDetail[] = overdueBooks.map((book) => {
         // Kiểm tra xem cuonSach có tồn tại không để tránh lỗi runtime
-        const bookName = book.cuonSach?.dauSach?.tenDauSach 
-          || book.cuonSach?.maCuonSach 
-          || `Cuốn #${book.maCuonSach}`;
+        const bookName = `Cuốn #${book.maCuonSach}`;
 
         return {
           id: `${book.ngay}-${book.maCuonSach}`,
@@ -62,6 +60,7 @@ export default function LateReturnReportView() {
     } finally {
       setLoading(false);
     }
+  };
 
   const handlePrint = () => {
     window.print();
@@ -84,7 +83,10 @@ export default function LateReturnReportView() {
   };
 
   return (
-    <SectionContainer>
+    <SectionContainer
+      title="Báo cáo sách trả trễ hạn"
+      description="Thống kê các cuốn sách được trả muộn hơn hạn quy định"
+    >
       <div className="space-y-6">
         {/* Control Panel */}
         <div className="print:hidden rounded-xl bg-white p-6 shadow-sm border border-gray-100">
@@ -256,5 +258,4 @@ export default function LateReturnReportView() {
       `}</style>
     </SectionContainer>
   );
-}
 }

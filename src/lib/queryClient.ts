@@ -1,5 +1,4 @@
 import { QueryClient } from '@tanstack/react-query';
-import { parseError } from '../services/apiClient';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,10 +13,7 @@ export const queryClient = new QueryClient({
         // Retry up to 2 times on other errors
         return failureCount < 2;
       },
-      throwOnError: (error) => {
-        const parsed = parseError(error);
-        return parsed;
-      },
+      throwOnError: false,
     },
     mutations: {
       retry: 1,
