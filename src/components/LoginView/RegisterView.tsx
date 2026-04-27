@@ -100,8 +100,8 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Full Name */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <User className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+              <User size={18} />
             </div>
             <TextInput
               label="Full Name"
@@ -112,7 +112,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
               placeholder="Your full name"
               disabled={signupMutation.isPending}
               required
-              className="pl-12 bg-slate-50/50 border-slate-200"
+              className="pl-10 bg-slate-50/50 border-slate-200"
             />
           </div>
         </div>
@@ -120,8 +120,8 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Username */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <User className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+              <User size={18} />
             </div>
             <TextInput
               label="Username"
@@ -133,7 +133,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
               disabled={signupMutation.isPending}
               autoComplete="username"
               required
-              className="pl-12 bg-slate-50/50 border-slate-200"
+              className="pl-10 bg-slate-50/50 border-slate-200"
             />
           </div>
         </div>
@@ -141,8 +141,8 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Email */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Mail className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+              <Mail size={18} />
             </div>
             <TextInput
               label="Email"
@@ -155,7 +155,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
               disabled={signupMutation.isPending}
               autoComplete="email"
               required
-              className="pl-12 bg-slate-50/50 border-slate-200"
+              className="pl-10 bg-slate-50/50 border-slate-200"
             />
           </div>
         </div>
@@ -163,8 +163,8 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Date of Birth */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Calendar className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+              <Calendar size={18} />
             </div>
             <TextInput
               label="Date of Birth"
@@ -175,7 +175,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
               error={errors.ngaySinh}
               disabled={signupMutation.isPending}
               required
-              className="pl-12 bg-slate-50/50 border-slate-200"
+              className="pl-10 bg-slate-50/50 border-slate-200"
             />
           </div>
         </div>
@@ -183,8 +183,8 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Password */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Lock className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+              <Lock size={18} />
             </div>
             <TextInput
               label="Password"
@@ -197,7 +197,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
               disabled={signupMutation.isPending}
               autoComplete="new-password"
               required
-              className="pl-12 bg-slate-50/50 border-slate-200"
+              className="pl-10 bg-slate-50/50 border-slate-200"
             />
           </div>
         </div>
@@ -205,8 +205,8 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
         {/* Confirm Password */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Lock className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+              <Lock size={18} />
             </div>
             <TextInput
               label="Confirm Password"
@@ -219,7 +219,7 @@ export default function RegisterView({ onSwitchToLogin }: RegisterViewProps) {
               disabled={signupMutation.isPending}
               autoComplete="new-password"
               required
-              className="pl-12 bg-slate-50/50 border-slate-200"
+              className="pl-10 bg-slate-50/50 border-slate-200"
             />
           </div>
         </div>

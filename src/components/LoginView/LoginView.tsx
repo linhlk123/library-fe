@@ -135,8 +135,8 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
         {/* Username Field */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <User className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+              <User size={18} />
             </div>
             <TextInput
               label="Username"
@@ -148,7 +148,7 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
               disabled={loginMutation.isPending || isLoadingProfile}
               autoComplete="username"
               required
-              className="pl-12 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition-all duration-200"
+              className="pl-10 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition-all duration-200"
             />
           </div>
         </div>
@@ -156,8 +156,8 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
         {/* Password Field */}
         <div className="group">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Lock className="text-slate-400 group-focus-within:text-emerald-600 transition-colors duration-200" size={18} />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200">
+              <Lock size={18} />
             </div>
             <TextInput
               label="Password"
@@ -170,7 +170,7 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
               disabled={loginMutation.isPending || isLoadingProfile}
               autoComplete="current-password"
               required
-              className="pl-12 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition-all duration-200"
+              className="pl-10 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition-all duration-200"
             />
           </div>
         </div>
