@@ -2,7 +2,12 @@ import axios from 'axios';
 import type { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ApiResponse } from '../types';
 import { useAuthStore } from '../stores';
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://library-crbe.onrender.com';
+
+// In development, use relative URLs (Vite proxy handles it)
+// In production, use full backend URL
+const API_BASE_URL = import.meta.env.PROD 
+  ? (import.meta.env.VITE_API_URL || 'https://library-crbe.onrender.com')
+  : '';
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,

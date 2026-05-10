@@ -30,11 +30,11 @@ interface UserLayoutProps {
 }
 
 const navigationItems = [
-  { id: 'DASHBOARD', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'CATALOG', label: 'Khám phá', icon: BookOpen },
-  { id: 'MY_BORROWINGS', label: 'Đang mượn', icon: BookCheck },
-  { id: 'PENALTY_FEES', label: 'Phí phạt', icon: AlertCircle },
-  { id: 'PROFILE', label: 'Hồ sơ', icon: User },
+  { id: 'DASHBOARD', label: 'Bảng Điều Khiển', icon: LayoutDashboard },
+  { id: 'CATALOG', label: 'Khám Phá', icon: BookOpen },
+  { id: 'MY_BORROWINGS', label: 'Đang Mượn', icon: BookCheck },
+  { id: 'PENALTY_FEES', label: 'Phí Phạt', icon: AlertCircle },
+  { id: 'PROFILE', label: 'Hồ Sơ', icon: User },
 ] as const;
 
 export default function UserLayout({
@@ -66,7 +66,7 @@ export default function UserLayout({
   const sidebarBorder = isDarkMode ? 'border-slate-800' : 'border-emerald-100';
   const sidebarMuted = isDarkMode ? 'text-slate-400' : 'text-gray-600';
   const sidebarMutedHover = isDarkMode ? 'hover:text-white' : 'hover:text-gray-900';
-  const navDefault = isDarkMode
+  const navDefault = !isDarkMode
     ? 'text-slate-400 hover:text-white hover:bg-slate-800'
     : 'text-gray-700 hover:text-gray-900 hover:bg-emerald-50';
   const navActive = 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg';
@@ -105,7 +105,7 @@ export default function UserLayout({
               <div className="flex items-center gap-3">
                 <div className="text-2xl font-bold bg-gradient-to-br from-emerald-500 to-emerald-700 bg-clip-text text-transparent">⚡</div>
                 <div>
-                  <h1 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>LibConnect</h1>
+                  <h1 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>EduLib</h1>
                   <p className={`text-xs ${sidebarMuted}`}>IT Library</p>
                 </div>
               </div>
@@ -205,7 +205,7 @@ export default function UserLayout({
                   {navigationItems.find((item) => item.id === currentView)
                     ?.label || 'Dashboard'}
                 </h2>
-                <p className={`text-xs mt-1 ${headerSub}`}>LibConnect LMS • IT-focused Library System</p>
+                <p className={`text-xs mt-1 ${headerSub}`}>EduLib LMS • IT-focused Library System</p>
               </div>
             </div>
 

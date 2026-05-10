@@ -5,21 +5,20 @@ import { queryClient } from './lib/queryClient';
 import { ToastContainer } from './components/shared/Toast';
 import AuthLayout from './components/LoginView';
 import UserLayout, { type UserViewType } from './layouts/UserLayout';
-import { Sidebar, Header } from './components/Layout';
-import ChatWidget from './components/ChatWidget';
-import { useRole } from './hooks/useRole';
+import StaffLayout from './layouts/StaffLayout';
 
 // Admin views
+import DashboardView from './pages/staff/DashboardView';
 import ReaderCardView from './pages/ReaderCard';
-import ReaderTypesView from './pages/ReaderTypes';
-import NewBookIntakeView from './pages/NewBook';
-import CategoriesView from './pages/Categories';
-import AuthorsView from './pages/Authors';
+import ReaderTypesView from './pages/ReaderTypes'; // Đã thêm import
+import NewBookIntakeView from './pages/NewBook'; // Đã thêm import
+import CategoriesView from './pages/Categories'; // Đã thêm import
+import AuthorsView from './pages/Authors'; // Đã thêm import
 import CatalogView from './pages/BookSearch';
-import BorrowReturnSlipView from './pages/BorrowReturn';
-import FineReceiptView from './pages/FineReceipt';
-import BorrowSlipManagerView from './pages/staff/BorrowSlipManagerView';
-import FineReceiptManagerView from './pages/staff/FineReceiptManagerView';
+import BorrowReturnSlipView from './pages/BorrowReturn'; // Đã thêm import
+import FineReceiptView from './pages/FineReceipt'; // Đã thêm import
+import BorrowSlipManagerViewNew from './pages/staff/BorrowSlipManagerViewNew';
+import FineReceiptManagerViewNew from './pages/staff/FineReceiptManagerViewNew';
 import ReportsView from './pages/Reports';
 import RegulationsView from './pages/Regulations';
 import UserRolesView from './pages/UserRoles';
@@ -33,6 +32,7 @@ import ActiveBorrowsView from './views/user/ActiveBorrowsView';
 import PenaltyFeeView from './views/user/PenaltyFeeView';
 
 export type ViewState =
+  | 'DASHBOARD'
   | 'READER_CARD'
   | 'READER_TYPES'
   | 'NEW_BOOK'
@@ -50,13 +50,18 @@ export type ViewState =
 
 function AppContent() {
   const { user, role } = useAuthStore();
-  const { canAccessView } = useRole();
   const { notifications, removeNotification } = useUIStore();
-  const [adminView, setAdminView] = React.useState<ViewState>('CATALOG');
+  
   const [userView, setUserView] = React.useState<UserViewType>('DASHBOARD');
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  // Đã đổi state staff thành viewToRender dùng ViewState
+  const [viewToRender, setViewToRender] = React.useState<ViewState>('CATALOG');
 
-  const { logout } = useAuthStore();
+  // Hàm kiểm tra quyền truy cập (Thay thế logic này bằng logic thực tế của bạn)
+  const canAccessView = () => {
+    // Ví dụ: Nếu cần kiểm tra quyền cụ thể từ backend/store
+    // return user.permissions.includes(view);
+    return true; 
+  };
 
   // If not logged in, show auth layout (login/register)
   if (!user) {
@@ -88,60 +93,28 @@ function AppContent() {
       );
   }
 
-  // STAFF/ADMIN role - show admin interface
-  const handleLogout = () => {
-    logout();
-  };
-
-  // Check if current view is accessible, if not, reset to first accessible view
-  const accessibleViews = canAccessView('CATALOG') ? adminView : 'CATALOG' as ViewState;
-  const viewToRender = canAccessView(adminView) ? adminView : accessibleViews;
-
+  // STAFF / ADMIN role
   return (
     <>
-      <div className="flex h-screen bg-gray-50 font-sans text-gray-900 overflow-hidden">
-        <Sidebar
-          currentView={viewToRender}
-          isSidebarOpen={isSidebarOpen}
-          onNavigate={(view) => {
-            // Only allow navigation to accessible views
-            if (canAccessView(view)) {
-              setAdminView(view);
-            }
-          }}
-          onCloseSidebar={() => setIsSidebarOpen(false)}
-          onLogout={handleLogout}
-        />
-
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <Header
-            user={user}
-            currentView={viewToRender}
-            onOpenSidebar={() => setIsSidebarOpen(true)}
-          />
-
-          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gray-50">
-            <div className="max-w-7xl mx-auto">
-              {viewToRender === 'READER_CARD' && canAccessView('READER_CARD') && <ReaderCardView />}
-              {viewToRender === 'READER_TYPES' && canAccessView('READER_TYPES') && <ReaderTypesView />}
-              {viewToRender === 'NEW_BOOK' && canAccessView('NEW_BOOK') && <NewBookIntakeView />}
-              {viewToRender === 'CATEGORIES' && canAccessView('CATEGORIES') && <CategoriesView />}
-              {viewToRender === 'AUTHORS' && canAccessView('AUTHORS') && <AuthorsView />}
-              {viewToRender === 'CATALOG' && canAccessView('CATALOG') && <CatalogView />}
-              {viewToRender === 'BORROW_RETURN' && canAccessView('BORROW_RETURN') && <BorrowReturnSlipView />}
-              {viewToRender === 'FINE_RECEIPT' && canAccessView('FINE_RECEIPT') && <FineReceiptView />}
-              {viewToRender === 'BORROW_SLIP_MANAGER' && canAccessView('BORROW_SLIP_MANAGER') && <BorrowSlipManagerView />}
-              {viewToRender === 'FINE_RECEIPT_MANAGER' && canAccessView('FINE_RECEIPT_MANAGER') && <FineReceiptManagerView />}
-              {viewToRender === 'REPORTS' && canAccessView('REPORTS') && <ReportsView />}
-              {viewToRender === 'REGULATIONS' && canAccessView('REGULATIONS') && <RegulationsView />}
-              {viewToRender === 'USER_ROLES' && canAccessView('USER_ROLES') && <UserRolesView />}
-              {viewToRender === 'USER_ACCOUNTS' && canAccessView('USER_ACCOUNTS') && <UserAccountsView />}
-            </div>
-          </main>
+      <StaffLayout currentView={viewToRender} onNavigate={setViewToRender}>
+        <div className="max-w-7xl mx-auto">
+          {viewToRender === 'DASHBOARD' && canAccessView() && <DashboardView />}
+          {viewToRender === 'READER_CARD' && canAccessView() && <ReaderCardView />}
+          {viewToRender === 'READER_TYPES' && canAccessView() && <ReaderTypesView />}
+          {viewToRender === 'NEW_BOOK' && canAccessView() && <NewBookIntakeView />}
+          {viewToRender === 'CATEGORIES' && canAccessView() && <CategoriesView />}
+          {viewToRender === 'AUTHORS' && canAccessView() && <AuthorsView />}
+          {viewToRender === 'CATALOG' && canAccessView() && <CatalogView />}
+          {viewToRender === 'BORROW_RETURN' && canAccessView() && <BorrowReturnSlipView />}
+          {viewToRender === 'FINE_RECEIPT' && canAccessView() && <FineReceiptView />}
+          {viewToRender === 'BORROW_SLIP_MANAGER' && canAccessView() && <BorrowSlipManagerViewNew />}
+          {viewToRender === 'FINE_RECEIPT_MANAGER' && canAccessView() && <FineReceiptManagerViewNew />}
+          {viewToRender === 'REPORTS' && canAccessView() && <ReportsView />}
+          {viewToRender === 'REGULATIONS' && canAccessView() && <RegulationsView />}
+          {viewToRender === 'USER_ROLES' && canAccessView() && <UserRolesView />}
+          {viewToRender === 'USER_ACCOUNTS' && canAccessView() && <UserAccountsView />}
         </div>
-
-        <ChatWidget role="STAFF" />
-      </div>
+      </StaffLayout>
 
       <ToastContainer
         notifications={notifications}
@@ -158,4 +131,3 @@ export default function App() {
     </QueryClientProvider>
   );
 }
-

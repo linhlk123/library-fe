@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, Send, X, Moon, Sun } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import axios from 'axios';
+import { chatbotApi } from '../../services/chatbotApi';
 import type { ChatMessage } from '../../types';
 
 interface ChatWidgetProps {
@@ -46,7 +46,6 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ role = 'USER' }) => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const loadingAbortRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -83,46 +82,29 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ role = 'USER' }) => {
     setInput('');
     setIsTyping(true);
 
-    const abortController = new AbortController();
-    loadingAbortRef.current = abortController;
-
     try {
-      // Try multiple endpoints for compatibility
-      let response;
+      // Call the backend chatbot API
+      let replyText: string | null = null;
       try {
-        response = await axios.post(
-          '/api/v1/ai-chat',
-          { message: currentInput },
-          {
-            signal: abortController.signal,
-            timeout: 20000,
-          }
-        );
+        const result = await chatbotApi.sendMessage({ message: currentInput });
+        replyText = result.data?.result?.reply;
       } catch (err) {
-        // Fallback to alternative endpoint
+        // Fallback to v1 endpoint
         console.log('[ChatWidget] Trying alternative AI endpoint...');
-        response = await axios.post(
-          'https://api.openai.com/v1/chat/completions',
-          { message: currentInput },
-          {
-            signal: abortController.signal,
-            timeout: 20000,
-          }
-        );
+        const result = await chatbotApi.sendMessageV1({ message: currentInput });
+        replyText = result.data?.result?.reply;
       }
 
-      if (response.data?.reply) {
+      if (replyText) {
         const botMsg: ChatMessage = {
           id: Date.now().toString(),
-          text: response.data.reply,
+          text: replyText,
           sender: 'BOT',
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, botMsg]);
       }
     } catch (err) {
-      if (axios.isCancel(err)) return;
-      
       console.error('[ChatWidget] Error:', err);
       const errorMsg: ChatMessage = {
         id: Date.now().toString(),
@@ -133,7 +115,6 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ role = 'USER' }) => {
       setMessages((prev) => [...prev, errorMsg]);
     } finally {
       setIsTyping(false);
-      loadingAbortRef.current = null;
     }
   };
 

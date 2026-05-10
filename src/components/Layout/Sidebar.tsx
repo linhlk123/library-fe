@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import type { ViewState } from '../../App';
 import { useRole } from '../../hooks/useRole';
+import { useAuthStore } from '../../stores';
 import { navItems } from './navItems';
 import { staffApi } from '../../services/staffApi';
 
@@ -25,6 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   onLogout,
 }) => {
   const { canAccessView } = useRole();
+  const { token } = useAuthStore();
 
   const { data: pendingCount = 0 } = useQuery({
     queryKey: ['staff-borrow-pending-count'],
@@ -34,6 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     },
     refetchInterval: 10000,
     staleTime: 5000,
+    enabled: !!token,
   });
 
   // Filter menu items based on user permissions

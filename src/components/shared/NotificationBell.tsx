@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useAuthStore } from '../../stores';
 import notificationApi from '../../services/notificationApi';
 import {
   Bell,
@@ -17,6 +18,7 @@ export function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { token } = useAuthStore();
 
   // Fetch unread count
   const { data: unreadCountData } = useQuery({
@@ -27,6 +29,7 @@ export function NotificationBell() {
     },
     refetchInterval: 30000, // Refetch every 30 seconds
     retry: 1,
+    enabled: !!token,
   });
 
   // Update unread count when data changes

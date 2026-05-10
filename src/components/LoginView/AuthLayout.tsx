@@ -4,84 +4,46 @@ import RegisterView from './RegisterView';
 
 type AuthView = 'login' | 'register';
 
-// 3D Isometric Library Illustration Component
-const LibraryIllustration = () => (
-  <svg viewBox="0 0 400 500" className="w-full h-full" style={{ fontFamily: "'Inter', sans-serif" }}>
+// Modern Minimalist Logo Component
+const ModernLibraryLogo = () => (
+  <svg viewBox="0 0 60 60" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#10B981" stopOpacity="0.8" />
-        <stop offset="100%" stopColor="#059669" stopOpacity="0.6" />
+      <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#6EE7B7" />
+        <stop offset="100%" stopColor="#10B981" />
       </linearGradient>
-      <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#6EE7B7" stopOpacity="0.7" />
-        <stop offset="100%" stopColor="#10B981" stopOpacity="0.5" />
-      </linearGradient>
-      <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-        <feDropShadow dx="2" dy="2" stdDeviation="3" floodOpacity="0.1" />
-      </filter>
     </defs>
+    <path d="M 20 15 L 15 20 L 15 45 Q 15 50 20 50 L 30 50 L 30 15 Z" 
+          fill="url(#logoGrad)" opacity="0.9"/>
+    <path d="M 40 15 L 45 20 L 45 45 Q 45 50 40 50 L 30 50 L 30 15 Z" 
+          fill="url(#logoGrad)" opacity="0.7"/>
+    <circle cx="22" cy="28" r="2.5" fill="#10B981" opacity="0.8"/>
+    <circle cx="38" cy="32" r="2.5" fill="#10B981" opacity="0.8"/>
+    <circle cx="30" cy="38" r="2" fill="#6EE7B7" opacity="0.6"/>
+    <line x1="22" y1="28" x2="30" y2="38" stroke="#10B981" strokeWidth="1.5" opacity="0.5"/>
+    <line x1="38" y1="32" x2="30" y2="38" stroke="#10B981" strokeWidth="1.5" opacity="0.5"/>
+    <line x1="22" y1="28" x2="38" y2="32" stroke="#6EE7B7" strokeWidth="1" opacity="0.3"/>
+  </svg>
+);
 
-    {/* Background blur circles */}
-    <circle cx="100" cy="100" r="80" fill="#10B981" opacity="0.08" />
-    <circle cx="320" cy="380" r="100" fill="#059669" opacity="0.05" />
-
-    {/* Central connecting hub */}
-    <circle cx="200" cy="250" r="35" fill="url(#grad1)" filter="url(#shadow)" />
-    <circle cx="200" cy="250" r="30" fill="none" stroke="#10B981" strokeWidth="1" opacity="0.4" />
-
-    {/* Isometric books - Left cluster */}
-    {/* Book 1 */}
-    <g>
-      <polygon points="80,280 80,200 120,180 120,260" fill="#10B981" opacity="0.9" />
-      <polygon points="80,200 120,180 135,185 95,205" fill="#6EE7B7" opacity="0.7" />
-    </g>
-    {/* Book 2 */}
-    <g>
-      <polygon points="50,310 50,230 90,210 90,290" fill="#059669" opacity="0.8" />
-      <polygon points="50,230 90,210 105,215 65,235" fill="#10B981" opacity="0.6" />
-    </g>
-    {/* Book 3 */}
-    <g>
-      <polygon points="120,330 120,250 160,230 160,310" fill="#10B981" opacity="0.85" />
-      <polygon points="120,250 160,230 175,235 135,255" fill="#6EE7B7" opacity="0.65" />
-    </g>
-
-    {/* Isometric books - Right cluster */}
-    {/* Book 4 */}
-    <g>
-      <polygon points="280,200 280,120 320,100 320,180" fill="#10B981" opacity="0.9" />
-      <polygon points="280,120 320,100 335,105 295,125" fill="#6EE7B7" opacity="0.7" />
-    </g>
-    {/* Book 5 */}
-    <g>
-      <polygon points="310,290 310,210 350,190 350,270" fill="#059669" opacity="0.8" />
-      <polygon points="310,210 350,190 365,195 325,215" fill="#10B981" opacity="0.6" />
-    </g>
-    {/* Book 6 */}
-    <g>
-      <polygon points="250,330 250,250 290,230 290,310" fill="#10B981" opacity="0.85" />
-      <polygon points="250,250 290,230 305,235 265,255" fill="#6EE7B7" opacity="0.65" />
-    </g>
-
-    {/* Connecting lines - Digital network */}
-    <line x1="200" y1="250" x2="100" y2="250" stroke="#10B981" strokeWidth="2" opacity="0.3" strokeDasharray="5,5" />
-    <line x1="200" y1="250" x2="300" y2="250" stroke="#10B981" strokeWidth="2" opacity="0.3" strokeDasharray="5,5" />
-    <line x1="200" y1="250" x2="150" y2="150" stroke="#6EE7B7" strokeWidth="1.5" opacity="0.25" strokeDasharray="4,4" />
-    <line x1="200" y1="250" x2="280" y2="140" stroke="#6EE7B7" strokeWidth="1.5" opacity="0.25" strokeDasharray="4,4" />
-
-    {/* Network nodes */}
-    <circle cx="150" cy="150" r="4" fill="#6EE7B7" opacity="0.8" />
-    <circle cx="280" cy="140" r="4" fill="#6EE7B7" opacity="0.8" />
-    <circle cx="100" cy="250" r="4" fill="#10B981" opacity="0.6" />
-    <circle cx="300" cy="250" r="4" fill="#10B981" opacity="0.6" />
-
-    {/* Top floating elements */}
-    <rect x="180" y="80" width="40" height="25" fill="#10B981" opacity="0.7" rx="4" />
-    <rect x="320" y="120" width="30" height="30" fill="#6EE7B7" opacity="0.6" rx="3" />
-
-    {/* Bottom accent elements */}
-    <path d="M 80 420 L 100 410 L 110 430 Z" fill="#10B981" opacity="0.5" />
-    <path d="M 300 450 L 320 440 L 330 460 Z" fill="#6EE7B7" opacity="0.4" />
+// Cloud Wave Motif Component
+const CloudWaveMotif = () => (
+  <svg viewBox="0 0 200 600" className="w-full h-full" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#6EE7B7" />
+        <stop offset="50%" stopColor="#5dd9b1" />
+        <stop offset="100%" stopColor="#10B981" />
+      </linearGradient>
+    </defs>
+    <path d="M 0,100 Q 50,80 100,100 T 200,100 L 200,0 L 0,0 Z" 
+          fill="url(#waveGrad)" opacity="0.15"/>
+    <path d="M 0,200 Q 60,170 120,190 T 200,210 L 200,140 Q 100,160 0,140 Z" 
+          fill="url(#waveGrad)" opacity="0.12"/>
+    <path d="M 0,350 Q 70,320 140,350 T 200,370 L 200,280 Q 90,300 0,280 Z" 
+          fill="url(#waveGrad)" opacity="0.1"/>
+    <path d="M 0,480 Q 50,450 100,470 T 200,500 L 200,400 Q 100,430 0,410 Z" 
+          fill="url(#waveGrad)" opacity="0.08"/>
   </svg>
 );
 
@@ -89,59 +51,89 @@ export default function AuthLayout() {
   const [currentView, setCurrentView] = useState<AuthView>('login');
 
   return (
-    <div className="min-h-screen bg-slate-50 overflow-hidden">
-      {/* Subtle background blurs */}
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-emerald-50 to-teal-50 overflow-hidden relative">
+      {/* Animated background gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-96 -left-96 w-96 h-96 bg-slate-200 rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob"></div>
-        <div className="absolute -bottom-96 -right-96 w-96 h-96 bg-slate-300 rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-3 animate-blob animation-delay-4000"></div>
+        <div className="absolute -top-96 -left-96 w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute -bottom-96 -right-96 w-96 h-96 bg-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
       </div>
 
-      {/* Split Screen Container */}
-      <div className="relative w-full min-h-screen flex">
-        {/* Left Panel - Illustration */}
-        <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 relative">
-          <div className="w-full max-w-md h-full flex items-center justify-center">
-            <div className="w-full aspect-square flex items-center justify-center">
-              <LibraryIllustration />
+      {/* Logo - Top Right */}
+      <div className="absolute top-8 right-8 z-20 w-12 h-12 bg-white/40 backdrop-blur-md rounded-full p-2 shadow-xl shadow-emerald-100/50">
+        <ModernLibraryLogo />
+      </div>
+
+      {/* Main Container */}
+      <div className="relative w-full min-h-screen flex items-center justify-center p-4 z-10">
+        <div className="w-full max-w-5xl">
+          {/* Glass Panel */}
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-emerald-200/30">
+            {/* Glass background with backdrop blur */}
+            <div className="absolute inset-0 bg-white/70 backdrop-blur-xl border border-white/40"></div>
+
+            {/* Main Content */}
+            <div className="relative flex flex-col lg:flex-row min-h-[600px]">
+              
+              {/* Left Section - Form */}
+              <div className="w-full lg:w-1/2 flex flex-col justify-center p-8 sm:p-12 lg:p-16">
+                <div className="space-y-8">
+                  {/* Form Header */}
+                  <div className="space-y-2">
+                    <h2 className="text-3xl font-light text-slate-800">Hello!</h2>
+                    <p className="text-sm font-medium text-emerald-600">Sign in to your account</p>
+                  </div>
+
+                  {/* Form Content */}
+                  <div key={currentView} className="space-y-6">
+                    {currentView === 'login' && (
+                      <LoginView
+                        onSwitchToRegister={() => setCurrentView('register')}
+                      />
+                    )}
+                    {currentView === 'register' && (
+                      <RegisterView
+                        onSwitchToLogin={() => setCurrentView('login')}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Section - Cloud Motif & Welcome Message */}
+              <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center p-12 bg-gradient-to-br from-emerald-50/50 to-cyan-50/50">
+                
+                {/* Cloud Wave Background */}
+                <div className="absolute right-0 top-0 w-64 h-full">
+                  <CloudWaveMotif />
+                </div>
+
+                {/* Welcome Message */}
+                <div className="relative z-10 max-w-xs text-center">
+                  <h3 className="text-3xl font-semibold bg-gradient-to-br from-emerald-600 to-cyan-600 bg-clip-text text-transparent mb-4">
+                    Welcome Back!
+                  </h3>
+                  <p className="text-slate-600 text-sm leading-relaxed font-light">
+                    Access your digital library, manage your reading list, and explore thousands of books in our collection.
+                  </p>
+                  <div className="mt-8 flex justify-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-cyan-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-teal-400"></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          
-          {/* Left panel accent line */}
-          <div className="absolute right-0 top-0 w-px h-full bg-gradient-to-b from-transparent via-emerald-200 to-transparent opacity-30"></div>
-        </div>
 
-        {/* Right Panel - Login Form */}
-        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-8 lg:p-12">
-          <div className="w-full max-w-sm">
-            {/* Animated view transition */}
-            <div
-              className="transition-all duration-300"
-              key={currentView}
-            >
-              {currentView === 'login' && (
-                <LoginView
-                  onSwitchToRegister={() => setCurrentView('register')}
-                />
-              )}
-              {currentView === 'register' && (
-                <RegisterView
-                  onSwitchToLogin={() => setCurrentView('login')}
-                />
-              )}
-            </div>
+          {/* Bottom Label */}
+          <div className="text-center mt-8 text-xs text-slate-400 font-medium tracking-widest">
+            USER-FRIENDLY DESIGN MATERIALS
           </div>
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="absolute bottom-6 left-0 right-0 text-center">
-        <p className="text-xs text-slate-400 font-medium tracking-wide">
-          © 2024 Smart Library Management. All rights reserved.
-        </p>
-      </div>
-
-      {/* Animation styles */}
+      {/* Animation Keyframes */}
       <style>{`
         @keyframes blob {
           0%, 100% { transform: translate(0, 0) scale(1); }

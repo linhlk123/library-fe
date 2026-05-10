@@ -5,9 +5,8 @@ import { useAuthStore, useUIStore } from '../../stores';
 import authApi from '../../services/authApi';
 import { parseError } from '../../services/apiClient';
 import { validateForm, loginSchema } from '../../lib/validation';
-import { TextInput } from '../shared/FormField';
 import { Loader } from '../shared/Loader';
-import { LogIn, ChevronRight, Lock, User } from 'lucide-react';
+import { Lock, User, ChevronRight } from 'lucide-react';
 import type { LoginInput } from '../../lib/validation';
 import type { ApiResponse, NguoiDung } from '../../types';
 
@@ -24,6 +23,8 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const loginMutation = useMutation({
     mutationFn: async (data: { tenDangNhap: string; matKhau: string }) => {
@@ -45,7 +46,7 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
       setIsLoadingProfile(true);
       try {
         const profileRes = await axios.get<ApiResponse<NguoiDung>>(
-          'https://library-crbe.onrender.com/api/v1/users/me',
+          '/api/v1/users/me',
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -61,7 +62,7 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
           setUser(profileRes.data.result);
           addNotification({
             type: 'SUCCESS',
-            message: 'Login successful!',
+            message: 'Đăng nhập thành công!',
           });
           localStorage.setItem('maNhanVien', profileRes.data.result.tenDangNhap);
         }
@@ -80,7 +81,7 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
       console.error('❌ Login error:', apiError);
       addNotification({
         type: 'ERROR',
-        message: apiError.message || 'Login failed. Please try again.',
+        message: apiError.message || 'Đăng nhập thất bại. Vui lòng thử lại.',
       });
     },
   });
@@ -105,144 +106,133 @@ export default function LoginView({ onSwitchToRegister }: LoginViewProps) {
 
   if (isLoadingProfile) {
     return (
-      <div className="flex items-center justify-center py-24">
+      <div className="flex items-center justify-center py-8">
         <div className="text-center">
-          <Loader size="lg" message="Loading profile..." />
+          <Loader size="lg" message="Đang tải hồ sơ..." />
         </div>
       </div>
     );
   }
 
-  return (  
-    <div className="w-full space-y-8">
-      {/* Header Section */}
-      <div className="space-y-3 pb-8 border-b border-slate-200/50">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/20 group hover:shadow-emerald-500/30 transition-all duration-300">
-          <LogIn className="text-white group-hover:scale-110 transition-transform duration-300" size={24} />
-        </div>
-        <div className="pt-2">
-          <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-            Welcome Back
-          </h1>
-          <p className="text-slate-500 mt-2 font-medium text-base leading-relaxed">
-            Access your library account and explore our collection
-          </p>
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Username Input */}
+      <div className="space-y-2">
+        <label className="text-xs font-semibold text-slate-600 tracking-wide uppercase">Tên Đăng Nhập</label>
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-emerald-500 group-focus-within:text-emerald-600 transition-colors duration-200">
+            <User size={18} strokeWidth={2.5} />
+          </div>
+          <input
+            type="text"
+            name="tenDangNhap"
+            value={formData.tenDangNhap}
+            onChange={handleChange}
+            disabled={loginMutation.isPending || isLoadingProfile}
+            placeholder="Nhập tên đăng nhập"
+            autoComplete="username"
+            required
+            className="w-full pl-12 pr-4 py-3 bg-gradient-to-br from-white/80 to-cyan-50/80 border border-emerald-200/50 rounded-xl focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-300/30 transition-all duration-200 text-slate-800 placeholder:text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+          {errors.tenDangNhap && (
+            <p className="text-xs text-red-500 mt-1.5 font-medium">{errors.tenDangNhap}</p>
+          )}
         </div>
       </div>
 
-      {/* Form Section */}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Username Field */}
-        <div className="group">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200 translate-y-1.25">
-              <User size={18} />
-            </div>
-            <TextInput
-              label="Username"
-              name="tenDangNhap"
-              value={formData.tenDangNhap}
-              onChange={handleChange}
-              error={errors.tenDangNhap}
-              placeholder="Enter your username"
-              disabled={loginMutation.isPending || isLoadingProfile}
-              autoComplete="username"
-              required
-              className="pl-10 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition-all duration-200"
-            />
+      {/* Password Input */}
+      <div className="space-y-2">
+        <label className="text-xs font-semibold text-slate-600 tracking-wide uppercase">Mật Khẩu</label>
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-emerald-500 group-focus-within:text-emerald-600 transition-colors duration-200">
+            <Lock size={18} strokeWidth={2.5} />
           </div>
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name="matKhau"
+            value={formData.matKhau}
+            onChange={handleChange}
+            disabled={loginMutation.isPending || isLoadingProfile}
+            placeholder="Nhập mật khẩu"
+            autoComplete="current-password"
+            required
+            className="w-full pl-12 pr-12 py-3 bg-gradient-to-br from-white/80 to-cyan-50/80 border border-emerald-200/50 rounded-xl focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-300/30 transition-all duration-200 text-slate-800 placeholder:text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-slate-600 transition-colors duration-200"
+            disabled={loginMutation.isPending || isLoadingProfile}
+          >
+            {showPassword ? '👁' : '👁‍🗨'}
+          </button>
+          {errors.matKhau && (
+            <p className="text-xs text-red-500 mt-1.5 font-medium">{errors.matKhau}</p>
+          )}
         </div>
+      </div>
 
-        {/* Password Field */}
-        <div className="group">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-emerald-600 pointer-events-none transition-colors duration-200 translate-y-1.25">
-              <Lock size={18} />
-            </div>
-            <TextInput
-              label="Password"
-              type="password"
-              name="matKhau"
-              value={formData.matKhau}
-              onChange={handleChange}
-              error={errors.matKhau}
-              placeholder="Enter your password"
-              disabled={loginMutation.isPending || isLoadingProfile}
-              autoComplete="current-password"
-              required
-              className="pl-10 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition-all duration-200"
-            />
-          </div>
-        </div>
-
-        {/* Sign In Button */}
+      {/* Remember Me & Forgot Password */}
+      <div className="flex items-center justify-between pt-2">
+        <label className="flex items-center gap-2.5 cursor-pointer group">
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            disabled={loginMutation.isPending || isLoadingProfile}
+            className="w-4 h-4 rounded border-emerald-300 text-emerald-600 bg-white/50 focus:ring-emerald-400 focus:ring-offset-0 transition-all duration-200 cursor-pointer accent-emerald-600"
+          />
+          <span className="text-sm text-slate-600 font-medium group-hover:text-slate-800 transition-colors">
+            Nhớ tôi
+          </span>
+        </label>
         <button
-          type="submit"
-          disabled={loginMutation.isPending || isLoadingProfile}
-          className="w-full py-3 px-4 mt-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:from-emerald-600 hover:to-emerald-700 disabled:from-slate-300 disabled:to-slate-300 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 group"
+          type="button"
+          className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition-colors duration-200 hover:underline"
         >
+          Quên mật khẩu?
+        </button>
+      </div>
+
+      {/* Sign In Button */}
+      <button
+        type="submit"
+        disabled={loginMutation.isPending || isLoadingProfile}
+        className="w-full mt-8 py-3 px-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-200/50 hover:shadow-emerald-300/50 disabled:from-slate-300 disabled:to-slate-300 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 group overflow-hidden relative"
+      >
+        {/* Background gradient animation on hover */}
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        
+        <div className="relative flex items-center justify-center gap-2 w-full">
           {loginMutation.isPending || isLoadingProfile ? (
             <>
               <Loader size="sm" />
-              <span>{isLoadingProfile ? 'Loading profile...' : 'Signing in...'}</span>
+              <span>{isLoadingProfile ? 'Đang tải hồ sơ...' : 'Đang đăng nhập...'}</span>
             </>
           ) : (
             <>
-              <span>Sign In</span>
+              <span>ĐĂNG NHẬP</span>
               <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
             </>
           )}
-        </button>
-      </form>
-
-      {/* Divider */}
-      <div className="relative py-2">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200"></div>
         </div>
-        <div className="relative flex justify-center">
-          <span className="px-3 text-xs font-medium text-slate-400 bg-white">or</span>
-        </div>
-      </div>
-
-      {/* Register Link */}
-      <button
-        type="button"
-        onClick={onSwitchToRegister}
-        disabled={loginMutation.isPending || isLoadingProfile}
-        className="w-full py-2.5 px-4 border-2 border-slate-200 text-slate-700 font-semibold rounded-xl hover:border-emerald-200 hover:bg-emerald-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 group"
-      >
-        Create New Account
       </button>
 
-      {/* Footer Text */}
+      {/* Sign Up Link */}
       <div className="pt-4 text-center">
-        <p className="text-xs text-slate-400 font-medium tracking-wide">
-          Demo: staff / Staff@123
+        <p className="text-sm text-slate-600">
+          Chưa có tài khoản?{' '}
+          <button
+            type="button"
+            onClick={onSwitchToRegister}
+            disabled={loginMutation.isPending || isLoadingProfile}
+            className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors duration-200 disabled:text-slate-400"
+          >
+            Đăng Ký
+          </button>
         </p>
       </div>
-
-      {/* Micro-interaction styles */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
-        .font-sans {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-
-        input:focus {
-          outline: none;
-        }
-
-        input::placeholder {
-          @apply text-slate-400 transition-colors duration-200;
-        }
-
-        input:focus::placeholder {
-          @apply text-slate-300;
-        }
-      `}</style>
-    </div>
+    </form>
   );
 }
 
