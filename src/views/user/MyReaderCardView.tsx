@@ -33,7 +33,7 @@ export default function MyReaderCardView() {
     today.setHours(0, 0, 0, 0);
     expireDate.setHours(0, 0, 0, 0);
     return expireDate < today;
-  }, [readerCard?.ngayHetHan]);
+  }, [readerCard.ngayHetHan]);
 
   if (isLoading) {
     return (

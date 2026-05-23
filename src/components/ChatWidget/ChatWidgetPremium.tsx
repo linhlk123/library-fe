@@ -85,15 +85,9 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ role = 'USER' }) => {
     try {
       // Call the backend chatbot API
       let replyText: string | null = null;
-      try {
-        const result = await chatbotApi.sendMessage({ message: currentInput });
-        replyText = result.data?.result?.reply;
-      } catch (err) {
-        // Fallback to v1 endpoint
-        console.log('[ChatWidget] Trying alternative AI endpoint...');
-        const result = await chatbotApi.sendMessageV1({ message: currentInput });
-        replyText = result.data?.result?.reply;
-      }
+      const result = await chatbotApi.sendMessage({ message: currentInput });
+        replyText = result.data?.reply ||
+    'API có phản hồi nhưng frontend chưa đọc đúng field reply.';
 
       if (replyText) {
         const botMsg: ChatMessage = {

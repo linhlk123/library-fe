@@ -17,12 +17,5 @@ export const chatbotApi = {
    * POST /api/chat
    */
   sendMessage: (data: ChatRequest) =>
-    apiClient.post<ApiResponse<ChatResponse>>('/api/chat', data),
-
-  /**
-   * Gửi tin nhắn tới chatbot AI (alternative endpoint)
-   * POST /api/v1/ai-chat
-   */
-  sendMessageV1: (data: ChatRequest) =>
-    apiClient.post<ApiResponse<ChatResponse>>('/api/v1/ai-chat', data),
+    apiClient.post<ApiResponse<ChatResponse>>('/api/v1/ai-chat', data)
 };

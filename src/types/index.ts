@@ -1,5 +1,6 @@
 // ─── Wrapper chung ───────────────────────────────────────────────
 export interface ApiResponse<T> {
+  reply: string;
   code: number;
   message?: string;
   result: T;
