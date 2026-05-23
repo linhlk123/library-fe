@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import QRCode from 'react-qr-code';
 import { AlertTriangle, CalendarClock, CreditCard, Loader2 } from 'lucide-react';
@@ -26,14 +25,17 @@ export default function MyReaderCardView() {
 
   const readerCard: ReaderCard | null = data?.data?.result ?? null;
 
-  const isExpired = useMemo(() => {
+  const isExpired = (() => {
     if (!readerCard?.ngayHetHan) return false;
+
     const today = new Date();
     const expireDate = toDate(readerCard.ngayHetHan);
+
     today.setHours(0, 0, 0, 0);
     expireDate.setHours(0, 0, 0, 0);
+
     return expireDate < today;
-  }, [readerCard.ngayHetHan]);
+  })();
 
   if (isLoading) {
     return (
