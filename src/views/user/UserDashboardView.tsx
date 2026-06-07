@@ -254,7 +254,7 @@ export default function UserDashboardView() {
             </div>
           ) : (
             <div className="space-y-3">
-              {activeBorrowings.slice(0, 5).map((borrowing) => (
+              {activeBorrowings.slice(0, 5).map((borrowing: { soPhieu: string; ngayMuon: string | number | Date; ngayPhaiTra: string | number | Date; }) => (
                 <div
                   key={borrowing.soPhieu}
                   className="flex items-center justify-between rounded-xl bg-white/70 backdrop-blur-md p-4 border border-white/50 hover:shadow-md transition-all duration-300 hover:border-indigo-200"

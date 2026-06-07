@@ -26,20 +26,27 @@ export const setTokenStore = (store: typeof tokenStore) => {
   tokenStore = store;
 };
 
-apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    let token = localStorage.getItem('jwt_token');
-    
-    if (token) {
-      token = token.replace(/"/g, ''); // Đề phòng dính ngoặc kép
-      config.headers.set('Authorization', `Bearer ${token}`); 
+apiClient.interceptors.response.use(
+  (response) => {
+    const data = response.data;
+    if (data && typeof data === 'object' && 'code' in data) {
+      if (data.code !== 1000) {
+        const error = new Error(data.message || 'API error');
+        Object.assign(error, { code: data.code });
+        return Promise.reject(error);
+      }
     }
-    
-    return config;
+    return response;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    // Nếu token hết hạn hoặc sai, Spring Boot sẽ trả về 401
+    if (error.response?.status === 401) {
+      console.error("Token không hợp lệ hoặc hết hạn!");
+      // Bạn có thể redirect về login tại đây nếu cần
+    }
+    return Promise.reject(error);
+  }
 );
-
 
 
 // let isRefreshing = false;
