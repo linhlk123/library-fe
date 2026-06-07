@@ -1,7 +1,6 @@
 import axios from 'axios';
 import type { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ApiResponse } from '../types';
-import { useAuthStore } from '../stores';
 
 // In development, use relative URLs (Vite proxy handles it)
 // In production, use full backend URL

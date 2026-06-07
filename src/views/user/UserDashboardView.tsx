@@ -113,34 +113,35 @@ const BookRecommendCard = ({ book }: { book: BookForUI }) => (
 
 export default function UserDashboardView() {
   const { user } = useAuthStore();
+  const maDocGia = user?.tenDangNhap;
+  
+  console.log('Mã độc giả (tenDangNhap):', maDocGia);
 
-  const maDocGia = user?.tenDangNhap; 
-  console.log('Mã độc giả (tenDangNhap):', maDocGia); // Debug log để kiểm tra giá trị mã độc giả
-  // Fetch borrowings data
-  const { data: borrowingsData, isLoading: borrowingsLoading } = useQuery({
-    queryKey: ['borrowings', maDocGia], // Gắn mã độc giả vào key để phân biệt cache
+  // Fetch borrowings data - Dùng select để lấy thẳng mảng result
+  const { data: borrowings = [], isLoading: borrowingsLoading } = useQuery({
+    queryKey: ['borrowings', maDocGia],
     queryFn: () => userApi.getPhieuMuonByDocGia(maDocGia!),
-    enabled: !!maDocGia, // CHỈ GỌI API khi maDocGia đã có giá trị, tránh lỗi gửi undefined lên server
-    retry: 1,
-  });;
-
-  // Fetch books data for recommendations
-  const { data: booksData, isLoading: booksLoading } = useQuery({
-    queryKey: ['dausach-recent'],
-    queryFn: () => userApi.getAllDauSach(),
+    enabled: !!maDocGia,
+    select: (response) => response.data.result,
     retry: 1,
   });
 
-  const borrowings = borrowingsData?.data?.result ?? [];
-  const allBooks = booksData?.data?.result ?? [];
+  // Fetch books data
+  const { data: allBooks = [], isLoading: booksLoading } = useQuery({
+    queryKey: ['dausach-recent'],
+    queryFn: () => userApi.getAllDauSach(),
+    select: (response) => response.data.result,
+    retry: 1,
+  });
 
-  // Calculate stats
-  const activeBorrowings = borrowings.filter((b) => !b.ngayTra);
+  // Calculate stats với logic Date an toàn
+  const activeBorrowings = borrowings.filter((b: { ngayTra: unknown; }) => !b.ngayTra);
   const totalBorrowings = borrowings.length;
 
-  const overdueBorrowings = activeBorrowings.filter((b) => {
+  const overdueBorrowings = activeBorrowings.filter((b: { ngayPhaiTra: string | number | Date; }) => {
     const dueDate = new Date(b.ngayPhaiTra);
-    return dueDate < new Date();
+    const now = new Date();
+    return dueDate < now;
   });
 
   // Simulate fines (in real app, fetch from API)
