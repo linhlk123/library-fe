@@ -5,7 +5,6 @@ import type { ApiResponse } from '../types';
 // In development, use relative URLs (Vite proxy handles it)
 // In production, use full backend URL
 const API_BASE_URL = 'https://library-crbe.onrender.com';
-
 export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 90000,
@@ -19,7 +18,7 @@ let tokenStore: {
   setToken: (token: string | null) => void;
 } = {
   token: null,
-  setToken: () => {},
+  setToken: () => { },
 };
 
 export const setTokenStore = (store: typeof tokenStore) => {
@@ -29,12 +28,12 @@ export const setTokenStore = (store: typeof tokenStore) => {
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     let token = localStorage.getItem('jwt_token');
-    
+
     if (token) {
       token = token.replace(/"/g, ''); // Đề phòng dính ngoặc kép
-      config.headers.set('Authorization', `Bearer ${token}`); 
+      config.headers.set('Authorization', `Bearer ${token}`);
     }
-    
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -71,7 +70,7 @@ apiClient.interceptors.response.use(
   (response) => {
     // Extract code, message, result from ApiResponse wrapper
     const data = response.data;
-    
+
     // If response has code field (standardized ApiResponse format)
     if (data && typeof data === 'object' && 'code' in data) {
       if (data.code !== 1000) {
@@ -81,7 +80,7 @@ apiClient.interceptors.response.use(
         return Promise.reject(error);
       }
     }
-    
+
     return response;
   },
   async (error: AxiosError) => {

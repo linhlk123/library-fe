@@ -1,18 +1,77 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SectionContainer from '../../components/shared/SectionContainer';
 import BorrowCategoryReportView from './BorrowCategoryReportView';
 import LateReturnReportView from './LateReturnReportView';
-
-const reportCards = [
-  { title: 'Bao cao ton sach', value: '124', subtitle: 'Dau sach ton kho' },
-  { title: 'Bao cao muon tre', value: '18', subtitle: 'Doc gia tre han' },
-  { title: 'Bao cao tien phat', value: '12,500,000 VND', subtitle: 'Thang hien tai' },
-];
+import { booksApi } from '../../services/booksApi';
+import { lendingApi } from '../../services/lendingApi';
+import reportsApi from '../../services/reportsApi';
 
 type ReportTab = 'OVERVIEW' | 'BORROW_CATEGORY' | 'LATE_RETURN';
 
 const ReportsView = () => {
   const [activeTab, setActiveTab] = useState<ReportTab>('OVERVIEW');
+  const [totalDauSach, setTotalDauSach] = useState<number | null>(null);
+  const [totalLateBooks, setTotalLateBooks] = useState<number | null>(null);
+  const [totalFineCollected, setTotalFineCollected] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const extractArray = (resData: any): any[] => {
+          if (Array.isArray(resData)) return resData;
+          if (resData && typeof resData === 'object' && Array.isArray(resData.content)) {
+            return resData.content;
+          }
+          return [];
+        };
+
+        const [dausachRes, overdueRes, fineRes] = await Promise.all([
+          booksApi.dausach.getAll({ pageSize: 999 }),
+          reportsApi.overdueReport.getAll({ pageSize: 999 }),
+          lendingApi.phieuThuTienPhat.getAll({ pageSize: 999 }),
+        ]);
+
+        const dausachList = extractArray(dausachRes.data?.result);
+        const overdueList = extractArray(overdueRes.data?.result);
+        const fineList = extractArray(fineRes.data?.result);
+
+        setTotalDauSach(dausachList.length);
+        setTotalLateBooks(overdueList.length);
+        const totalFines = fineList.reduce((sum, item) => sum + (item.soTienThu || 0), 0);
+        setTotalFineCollected(totalFines);
+      } catch (err) {
+        console.error('Lỗi khi tải thống kê báo cáo:', err);
+        setError('Không tải được một số số liệu thống kê tổng quan.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  const reportCards = [
+    {
+      title: 'Báo cáo tồn sách',
+      value: loading ? 'Đang tải...' : totalDauSach !== null ? `${totalDauSach}` : 'N/A',
+      subtitle: 'Đầu sách trong thư viện'
+    },
+    {
+      title: 'Báo cáo mượn trễ',
+      value: loading ? 'Đang tải...' : totalLateBooks !== null ? `${totalLateBooks}` : 'N/A',
+      subtitle: 'Cuốn sách đang trễ hạn'
+    },
+    {
+      title: 'Báo cáo tiền phạt',
+      value: loading ? 'Đang tải...' : totalFineCollected !== null ? `${totalFineCollected.toLocaleString('vi-VN')} VND` : '0 VND',
+      subtitle: 'Tổng tiền phạt đã thu'
+    },
+  ];
 
   if (activeTab === 'BORROW_CATEGORY') {
     return (
@@ -48,9 +107,15 @@ const ReportsView = () => {
 
   return (
     <SectionContainer
-      title="Lap bao cao"
-      description="Tong hop tinh hinh sach, muon tra va tien phat."
+      title="Lập báo cáo"
+      description="Tổng hợp tình hình sách, mượn trả và tiền phạt"
     >
+      {error && (
+        <div className="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-600 border border-red-200">
+          {error}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         {reportCards.map((card) => (
           <article key={card.title} className="bg-white rounded-xl border border-gray-200 p-5">
@@ -68,7 +133,7 @@ const ReportsView = () => {
             onClick={() => setActiveTab('BORROW_CATEGORY')}
             className="w-full rounded-lg bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700 transition text-left"
           >
-            Báo cáo mượn sách theo thể loại
+            Thống kê mượn sách theo độc giả
           </button>
           <button
             onClick={() => setActiveTab('LATE_RETURN')}

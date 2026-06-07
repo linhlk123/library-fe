@@ -70,10 +70,18 @@ const BorrowReturnSlipView = () => {
           userApi.getAllCuonSach?.() || Promise.resolve({ data: { result: [] } }),
         ]);
 
-        setDocGiaList(docGiaRes.data?.result ?? []);
-        setDauSachList(dauSachRes.data?.result ?? []);
-        setSachList(sachRes.data?.result ?? []);
-        setCuonSachList(cuonSachRes.data?.result ?? []);
+        const extractArray = (resData: any): any[] => {
+          if (Array.isArray(resData)) return resData;
+          if (resData && typeof resData === 'object' && Array.isArray(resData.content)) {
+            return resData.content;
+          }
+          return [];
+        };
+
+        setDocGiaList(extractArray(docGiaRes.data?.result));
+        setDauSachList(extractArray(dauSachRes.data?.result));
+        setSachList(extractArray(sachRes.data?.result));
+        setCuonSachList(extractArray(cuonSachRes.data?.result));
       } catch (err) {
         console.error(err);
         setError('Không tải được dữ liệu. Vui lòng thử lại.');
@@ -113,8 +121,11 @@ const BorrowReturnSlipView = () => {
     }));
 
     // Filter available copies for this DauSach
-    const sachForDauSach = sachList.filter((s) => s.maDauSach === dauSach.maDauSach);
-    const available = cuonSachList
+    const safeSachList = Array.isArray(sachList) ? sachList : [];
+    const safeCuonSachList = Array.isArray(cuonSachList) ? cuonSachList : [];
+
+    const sachForDauSach = safeSachList.filter((s) => s.maDauSach === dauSach.maDauSach);
+    const available = safeCuonSachList
       .filter((cs) => cs.tinhTrang === 'AVAILABLE')
       .filter((cs) => sachForDauSach.some((s) => s.maSach === cs.maSach))
       .map((cs) => ({

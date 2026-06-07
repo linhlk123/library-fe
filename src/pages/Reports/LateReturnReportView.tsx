@@ -1,126 +1,171 @@
-import { useState } from 'react';
-import { Printer, AlertTriangle, Calendar } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Printer, AlertTriangle, RefreshCw } from 'lucide-react';
 import SectionContainer from '../../components/shared/SectionContainer';
-import reportsApi from '../../services/reportsApi';
-import type { BCSachTraTre } from '../../types';
+import { lendingApi } from '../../services/lendingApi';
+import { readersApi } from '../../services/readersApi';
+import { booksApi } from '../../services/booksApi';
 
 interface LateBookDetail {
   id: string | number;
+  maDocGia: string;
+  tenDocGia: string;
+  maCuonSach: number;
   tenSach: string;
-  ngayMuon: string; // dd/MM/yyyy format
+  ngayMuon: string;
+  ngayPhaiTra: string;
+  ngayTra: string;
   soNgayTraTre: number;
+  tienPhat: number;
 }
 
 export default function LateReturnReportView() {
-  const [selectedDate, setSelectedDate] = useState<string>(() => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  });
-
   const [reportData, setReportData] = useState<LateBookDetail[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch late return report from API
-  const fetchReport = async () => {
+  // Fetch all late return records by evaluating PhieuMuonTra
+  const fetchAllReports = async () => {
     try {
       setLoading(true);
+      setError(null);
 
-      // Call API to get books returned late by date
-      const response = await reportsApi.overdueReport.getByDate(selectedDate);
-      const overdueBooks = (response.data.result ?? []) as BCSachTraTre[];
+      const [slipsRes, readersRes, cuonSachRes, sachRes, dauSachRes] = await Promise.all([
+        lendingApi.phieuMuonTra.getAll({ pageSize: 1000 }),
+        readersApi.docgia.getAll({ pageSize: 1000 }),
+        booksApi.cuonsach.getAll({ pageSize: 1000 }),
+        booksApi.sach.getAll({ pageSize: 1000 }),
+        booksApi.dausach.getAll({ pageSize: 1000 }),
+      ]);
 
-// Format data for display
-      const formattedData: LateBookDetail[] = overdueBooks.map((book) => {
-        // Kiểm tra xem cuonSach có tồn tại không để tránh lỗi runtime
-        const bookName = `Cuốn #${book.maCuonSach}`;
+      const extractArray = (resData: any): any[] => {
+        if (Array.isArray(resData)) return resData;
+        if (resData && typeof resData === 'object' && Array.isArray(resData.content)) {
+          return resData.content;
+        }
+        return [];
+      };
 
-        return {
-          id: `${book.ngay}-${book.maCuonSach}`,
-          tenSach: bookName,
-          ngayMuon: book.ngay 
-            ? new Date(book.ngay).toLocaleDateString('vi-VN', {
-                year: 'numeric', // Nên dùng numeric cho rõ ràng hơn 2-digit
-                month: '2-digit',
-                day: '2-digit',
-              })
-            : 'N/A',
-          soNgayTraTre: book.soNgayTraTre || 0, // Tránh trường hợp null/undefined
-        };
-      });
+      const slips = extractArray(slipsRes.data?.result);
+      const readers = extractArray(readersRes.data?.result);
+      const cuonSachs = extractArray(cuonSachRes.data?.result);
+      const sachs = extractArray(sachRes.data?.result);
+      const dauSachs = extractArray(dauSachRes.data?.result);
+
+      const readersMap = new Map(readers.map(r => [r.maDocGia, r.hoTen]));
+      const cuonSachMap = new Map(cuonSachs.map(cs => [cs.maCuonSach, cs.maSach]));
+      const sachMap = new Map(sachs.map(s => [s.maSach, s.maDauSach]));
+      const dauSachMap = new Map(dauSachs.map(ds => [ds.maDauSach, ds.tenDauSach]));
+
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+
+      const formattedData: LateBookDetail[] = slips
+        .filter((slip) => {
+          const due = new Date(slip.ngayPhaiTra);
+          due.setHours(0, 0, 0, 0);
+
+          if (slip.ngayTra) {
+            const returned = new Date(slip.ngayTra);
+            returned.setHours(0, 0, 0, 0);
+            return returned > due;
+          } else {
+            return now > due;
+          }
+        })
+        .map((slip) => {
+          const due = new Date(slip.ngayPhaiTra);
+          due.setHours(0, 0, 0, 0);
+          const returned = slip.ngayTra ? new Date(slip.ngayTra) : now;
+          returned.setHours(0, 0, 0, 0);
+
+          const diffTime = returned.getTime() - due.getTime();
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          const soNgayTraTre = diffDays > 0 ? diffDays : 0;
+
+          const maSach = cuonSachMap.get(slip.maCuonSach);
+          const maDauSach = maSach ? sachMap.get(maSach) : undefined;
+          const tenSach = maDauSach ? (dauSachMap.get(maDauSach) || `Sách #${maSach}`) : `Cuốn #${slip.maCuonSach}`;
+          const tenDocGia = readersMap.get(slip.maDocGia) || 'Độc giả không rõ';
+
+          return {
+            id: `${slip.soPhieu || slip.maCuonSach}-${slip.maDocGia}`,
+            maDocGia: slip.maDocGia,
+            tenDocGia,
+            maCuonSach: slip.maCuonSach,
+            tenSach,
+            ngayMuon: slip.ngayMuon
+              ? new Date(slip.ngayMuon).toLocaleDateString('vi-VN')
+              : 'N/A',
+            ngayPhaiTra: slip.ngayPhaiTra
+              ? new Date(slip.ngayPhaiTra).toLocaleDateString('vi-VN')
+              : 'N/A',
+            ngayTra: slip.ngayTra
+              ? new Date(slip.ngayTra).toLocaleDateString('vi-VN')
+              : 'Chưa trả',
+            soNgayTraTre,
+            tienPhat: slip.tienPhat || (soNgayTraTre * 1000),
+          };
+        });
 
       setReportData(formattedData);
     } catch (err) {
-      // Ép kiểu Error để lấy được message chính xác
-      const error = err as Error;
-      console.error('Failed to fetch report:', error.message);
+      const errorMsg = err instanceof Error ? err.message : 'Lỗi không xác định khi tải danh sách';
+      console.error('Failed to fetch overdue books:', errorMsg);
+      setError(`Không thể tải danh sách sách trả trễ: ${errorMsg}`);
       setReportData([]);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchAllReports();
+  }, []);
+
   const handlePrint = () => {
     window.print();
   };
 
-  // Calculate summary stats
   const totalLateBooks = reportData.length;
   const maxLateDays = reportData.length > 0
     ? Math.max(...reportData.map((item) => item.soNgayTraTre))
     : 0;
 
-  const formatSelectedDate = (dateStr: string): string => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('vi-VN', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
   return (
     <SectionContainer
       title="Báo cáo sách trả trễ hạn"
-      description="Thống kê các cuốn sách được trả muộn hơn hạn quy định"
+      description="Thống kê toàn bộ các cuốn sách được trả muộn hơn hạn quy định"
     >
       <div className="space-y-6">
+        {error && (
+          <div className="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-600 border border-red-200 print:hidden">
+            {error}
+          </div>
+        )}
+
         {/* Control Panel */}
-        <div className="print:hidden rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-          <div className="flex flex-col sm:flex-row gap-4 items-end">
-            <div className="flex-1">
-              <label htmlFor="reportDate" className="block text-sm font-medium text-gray-700 mb-2">
-                Chọn ngày chốt báo cáo
-              </label>
-              <div className="flex items-center gap-2 border border-gray-300 rounded-lg px-4 py-2.5 bg-white focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-transparent">
-                <Calendar size={20} className="text-gray-400" />
-                <input
-                  id="reportDate"
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="flex-1 outline-none bg-transparent text-gray-900 font-medium"
-                />
-              </div>
-            </div>
-
+        <div className="print:hidden rounded-xl bg-white p-6 shadow-sm border border-gray-100 flex items-center justify-between">
+          <div>
+            <h4 className="text-sm font-semibold text-gray-900 mb-1">Thao tác dữ liệu</h4>
+            <p className="text-xs text-gray-500">
+              Dữ liệu sách trả trễ được tính toán tự động dựa trên toàn bộ dữ liệu phiếu mượn hiện hành.
+            </p>
+          </div>
+          <div className="flex gap-2">
             <button
-              onClick={fetchReport}
+              onClick={fetchAllReports}
               disabled={loading}
-              className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200"
+              className="px-4 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-1.5 transition"
             >
-              {loading ? 'Đang lập...' : 'Lập Báo Cáo'}
+              <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
+              Làm mới danh sách
             </button>
-
             {reportData.length > 0 && (
               <button
                 onClick={handlePrint}
-                className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition duration-200 flex items-center gap-2"
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 flex items-center gap-1.5 transition"
               >
-                <Printer size={18} />
+                <Printer size={15} />
                 In Báo Cáo
               </button>
             )}
@@ -140,7 +185,7 @@ export default function LateReturnReportView() {
                 <p className="text-gray-700 font-medium mb-2">quyển</p>
               </div>
               <p className="mt-3 text-xs text-red-700">
-                Tính đến {formatSelectedDate(selectedDate)}
+                Tổng số bản ghi có ngày trả lớn hơn hạn trả hoặc quá hạn mà chưa trả
               </p>
             </div>
 
@@ -154,7 +199,7 @@ export default function LateReturnReportView() {
                 <p className="text-gray-700 font-medium mb-2">ngày</p>
               </div>
               <p className="mt-3 text-xs text-orange-700">
-                Sách trễ hạn nhiều nhất
+                Sách trễ hạn nhiều nhất trong toàn bộ dữ liệu
               </p>
             </div>
           </div>
@@ -168,7 +213,7 @@ export default function LateReturnReportView() {
                 Danh sách sách trả trễ hạn
               </h3>
               <p className="text-xs text-gray-500 mt-1">
-                Ngày chốt: {formatSelectedDate(selectedDate)}
+                Hiển thị toàn bộ dữ liệu trả trễ
               </p>
             </div>
 
@@ -180,12 +225,21 @@ export default function LateReturnReportView() {
                       STT
                     </th>
                     <th className="px-6 py-4 text-left text-xs uppercase font-semibold text-gray-500">
-                      Tên sách
+                      Độc giả
                     </th>
-                    <th className="px-6 py-4 text-left text-xs uppercase font-semibold text-gray-500 w-32">
+                    <th className="px-6 py-4 text-left text-xs uppercase font-semibold text-gray-500">
+                      Sách mượn
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs uppercase font-semibold text-gray-500 w-28">
                       Ngày mượn
                     </th>
-                    <th className="px-6 py-4 text-right text-xs uppercase font-semibold text-gray-500 w-40">
+                    <th className="px-6 py-4 text-left text-xs uppercase font-semibold text-gray-500 w-28">
+                      Hạn trả
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs uppercase font-semibold text-gray-500 w-28">
+                      Ngày trả
+                    </th>
+                    <th className="px-6 py-4 text-right text-xs uppercase font-semibold text-gray-500 w-28">
                       Số ngày trễ
                     </th>
                   </tr>
@@ -200,18 +254,31 @@ export default function LateReturnReportView() {
                         {index + 1}
                       </td>
                       <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                        {item.tenSach}
+                        <div className="font-semibold">{item.tenDocGia}</div>
+                        <div className="text-xs text-gray-500">Mã: {item.maDocGia}</div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-700">
+                        <div className="font-medium text-gray-900">{item.tenSach}</div>
+                        <div className="text-xs text-gray-500">Mã cuốn: #{item.maCuonSach}</div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 font-medium">
+                        {item.ngayMuon}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 font-medium">
+                        {item.ngayPhaiTra}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500">
-                        {item.ngayMuon}
+                        <span className={item.ngayTra === 'Chưa trả' ? 'text-amber-600 font-semibold bg-amber-50 px-2 py-1 rounded' : 'text-gray-500'}>
+                          {item.ngayTra}
+                        </span>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-bold bg-red-100 text-red-700">
-                            {item.soNgayTraTre}
+                          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
+                            {item.soNgayTraTre} ngày
                           </span>
                           {item.soNgayTraTre > 30 && (
-                            <AlertTriangle size={18} className="text-red-600 flex-shrink-0" />
+                            <AlertTriangle size={18} className="text-red-600 flex-shrink-0 animate-bounce" />
                           )}
                         </div>
                       </td>
@@ -224,19 +291,18 @@ export default function LateReturnReportView() {
         ) : (
           !loading && (
             <div className="rounded-xl bg-white border border-gray-200 p-12 text-center shadow-sm">
-              <Calendar size={48} className="mx-auto text-gray-300 mb-4" />
+              <AlertTriangle size={48} className="mx-auto text-gray-300 mb-4" />
               <p className="text-gray-500 font-medium">
-                Không có sách nào trả trễ tính đến ngày này
+                Chưa ghi nhận dữ liệu sách trả trễ hạn nào trong hệ thống phiếu mượn.
               </p>
               <p className="text-xs text-gray-400 mt-2">
-                Hãy chọn ngày khác hoặc bấm "Lập Báo Cáo" để xem thống kê
+                Vui lòng lập phiếu mượn trễ hạn hoặc cập nhật ngày trả thực tế.
               </p>
             </div>
           )
         )}
       </div>
 
-      {/* Print Styles */}
       <style>{`
         @media print {
           body {

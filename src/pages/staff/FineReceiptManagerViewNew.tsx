@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Search, Edit2, Trash2 } from 'lucide-react';
+import { Search, Edit2, Trash2 } from 'lucide-react';
 import { staffApi } from '../../services/staffApi';
 import { useUIStore, useAuthStore } from '../../stores';
 import type { PhieuThuTienPhat } from '../../types';
@@ -16,12 +16,12 @@ export default function FineReceiptManagerView() {
   const { token } = useAuthStore();
   const { addNotification } = useUIStore();
   const queryClient = useQueryClient();
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState<PhieuThuTienPhat | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [formData, setFormData] = useState<FineReceiptFormData>({
     maDocGia: '',
     soTienThu: 0,
@@ -44,18 +44,6 @@ export default function FineReceiptManagerView() {
     receipt.maDocGia?.includes(searchQuery.toLowerCase()) ||
     receipt.soPTT?.toString().includes(searchQuery)
   );
-
-  const handleCreateNew = () => {
-    setSelectedReceipt(null);
-    setFormData({
-      maDocGia: '',
-      soTienThu: 0,
-      ngayThu: new Date().toISOString().split('T')[0],
-      ghiChu: '',
-    });
-    setShowForm(true);
-  };
-
   const handleSaveReceipt = async () => {
     if (!formData.maDocGia || formData.soTienThu <= 0) {
       addNotification({ type: 'ERROR', message: '✗ Vui lòng điền đầy đủ thông tin' });
@@ -102,13 +90,6 @@ export default function FineReceiptManagerView() {
           <h2 className="text-2xl font-bold text-slate-900">Quản Lý Phiếu Thu Tiền Phạt</h2>
           <p className="text-slate-600 text-sm mt-1">Quản lý thanh toán tiền phạt vi phạm từ độc giả</p>
         </div>
-        <button
-          onClick={handleCreateNew}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-lg shadow-lg shadow-emerald-200/30 transition-all"
-        >
-          <Plus size={20} />
-          Tạo Phiếu Thu
-        </button>
       </div>
 
       {/* Search */}
@@ -201,7 +182,7 @@ export default function FineReceiptManagerView() {
               <h3 className="text-lg font-bold text-slate-900">
                 {selectedReceipt ? 'Cập Nhật Phiếu Thu' : 'Tạo Phiếu Thu Mới'}
               </h3>
-              
+
               <div className="space-y-3">
                 <input
                   type="text"

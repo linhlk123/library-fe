@@ -9,6 +9,7 @@ const AuthorsView = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedAuthor, setSelectedAuthor] = useState<TacGia | null>(null);
   const [formValue, setFormValue] = useState('');
+  const [formBirthDate, setFormBirthDate] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -43,9 +44,11 @@ const AuthorsView = () => {
     if (author) {
       setSelectedAuthor(author);
       setFormValue(author.tenTacGia);
+      setFormBirthDate(author.ngaySinh ? author.ngaySinh.split('T')[0] : '');
     } else {
       setSelectedAuthor(null);
       setFormValue('');
+      setFormBirthDate('');
     }
     setError(null);
     setMessage(null);
@@ -56,6 +59,7 @@ const AuthorsView = () => {
     setShowModal(false);
     setSelectedAuthor(null);
     setFormValue('');
+    setFormBirthDate('');
   };
 
   const handleSaveAuthor = async () => {
@@ -64,6 +68,7 @@ const AuthorsView = () => {
       setError('Tên tác giả không được để trống');
       return;
     }
+    const ngaySinh = formBirthDate || undefined;
 
     try {
       setSubmitting(true);
@@ -72,7 +77,7 @@ const AuthorsView = () => {
 
       if (selectedAuthor) {
         // Update existing author
-        const res = await booksApi.tacgia.update(selectedAuthor.maTacGia, { tenTacGia });
+        const res = await booksApi.tacgia.update(selectedAuthor.maTacGia, { tenTacGia, ngaySinh });
         const updatedAuthor = res.data?.result;
         setAuthors((prev) =>
           prev.map((item) =>
@@ -82,7 +87,7 @@ const AuthorsView = () => {
         setMessage('Cập nhật tác giả thành công!');
       } else {
         // Create new author
-        const res = await booksApi.tacgia.create({ tenTacGia });
+        const res = await booksApi.tacgia.create({ tenTacGia, ngaySinh });
         const createdAuthor = res.data?.result;
         setAuthors((prev) => [...prev, (createdAuthor as TacGia)]);
         setMessage('Thêm tác giả thành công!');
@@ -192,6 +197,18 @@ const AuthorsView = () => {
                     onChange={(e) => setFormValue(e.target.value)}
                     placeholder="Nhập tên tác giả..."
                     className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </label>
+              </div>
+
+              <div className="mb-6">
+                <label className="text-sm text-gray-600">
+                  Ngày sinh
+                  <input
+                    type="date"
+                    value={formBirthDate}
+                    onChange={(e) => setFormBirthDate(e.target.value)}
+                    className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') handleSaveAuthor();
                     }}
@@ -273,6 +290,15 @@ const AuthorsView = () => {
                       <div className="mb-6">
                         <p className="text-xs text-gray-500 mb-1">Mã tác giả</p>
                         <p className="text-sm font-medium text-gray-900">{author.maTacGia}</p>
+                      </div>
+
+                      <div className="mb-6">
+                        <p className="text-xs text-gray-500 mb-1">Ngày sinh</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {author.ngaySinh
+                            ? new Date(author.ngaySinh).toLocaleDateString('vi-VN')
+                            : 'Chưa cập nhật'}
+                        </p>
                       </div>
 
                       {/* Action Buttons */}

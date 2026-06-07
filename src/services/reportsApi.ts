@@ -16,6 +16,9 @@ export const reportsApi = {
     // Chi tiết theo báo cáo + thể loại cụ thể
     getDetailByKey: (maBCTHMS: string, maTheLoai: string) =>
       apiClient.get<ApiResponse<CTBC_THMS>>(`/api/ctbc-thms/${maBCTHMS}/${maTheLoai}`),
+
+    create: (data: { tenBaoCao?: string; ngayTao?: string; thang?: number; nam?: number }) =>
+      apiClient.post<ApiResponse<BCTinhHinhMuonSach>>('/api/bctinhhinhmuonsach', data),
   },
 
   overdueReport: {
@@ -34,6 +37,9 @@ export const reportsApi = {
 
     getByKey: (ngay: string, maCuonSach: string) =>
       apiClient.get<ApiResponse<BCSachTraTre>>(`/api/bc_sachtratre/${ngay}/${maCuonSach}`),
+
+    create: (data: { ngay?: string; thang?: number; nam?: number }) =>
+      apiClient.post<ApiResponse<any>>('/api/bc_sachtratre', data),
   },
 };
 

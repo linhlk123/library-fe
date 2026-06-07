@@ -15,30 +15,30 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ role = 'USER' }) => {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem(storageKey) === 'dark';
   });
-  
-  const colorScheme = isStaff 
-    ? {
-        primary: '#059669',
-        primaryLight: '#d1fae5',
-        primaryLighter: '#a7f3d0',
-        hover: '#047857',
-        text: 'Staff Library Assistant',
-      }
-    : {
-        primary: '#059669',
-        primaryLight: '#d1fae5',
-        primaryLighter: '#a7f3d0',
-        hover: '#047857',
-        text: 'AI Library Assistant',
-      };
 
-  const botTitle = isStaff ? 'BiblioBot (Staff Assistant)' : 'BiblioBot - AI Advisor';
+  const colorScheme = isStaff
+    ? {
+      primary: '#059669',
+      primaryLight: '#d1fae5',
+      primaryLighter: '#a7f3d0',
+      hover: '#047857',
+      text: 'Nhân viên thư viện',
+    }
+    : {
+      primary: '#059669',
+      primaryLight: '#d1fae5',
+      primaryLighter: '#a7f3d0',
+      hover: '#047857',
+      text: 'AI Library Assistant',
+    };
+
+  const botTitle = isStaff ? 'BiblioBot (Nhân viên thư viện)' : 'BiblioBot - Trợ lý AI';
 
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
-      text: `Hi there! I am ${botTitle}. How can I help you with your library needs today?`,
+      text: `Xin chào, tôi là ${botTitle}. Tôi có thể giúp gì cho bạn hôm nay?`,
       sender: 'BOT',
       timestamp: new Date(),
     },
@@ -76,7 +76,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ role = 'USER' }) => {
       sender: 'USER',
       timestamp: new Date(),
     };
-    
+
     setMessages((prev) => [...prev, userMsg]);
     const currentInput = input;
     setInput('');
@@ -86,8 +86,8 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ role = 'USER' }) => {
       // Call the backend chatbot API
       let replyText: string | null = null;
       const result = await chatbotApi.sendMessage({ message: currentInput });
-        replyText = result.data?.reply ||
-    'API có phản hồi nhưng frontend chưa đọc đúng field reply.';
+      replyText = result.data?.reply ||
+        'API có phản hồi nhưng frontend chưa đọc đúng field reply.';
 
       if (replyText) {
         const botMsg: ChatMessage = {
@@ -161,11 +161,10 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ role = 'USER' }) => {
                       ? { backgroundColor: colorScheme.primary, color: 'white' }
                       : {}
                   }
-                  className={`max-w-xs sm:max-w-sm break-words rounded-2xl px-3 sm:px-4 py-2 sm:py-3 text-sm shadow-md transition-all duration-200 overflow-hidden ${
-                    msg.sender === 'USER'
-                      ? 'rounded-br-none hover:shadow-lg'
-                      : `${botBubbleBg} border rounded-bl-none hover:shadow-lg`
-                  }`}
+                  className={`max-w-xs sm:max-w-sm break-words rounded-2xl px-3 sm:px-4 py-2 sm:py-3 text-sm shadow-md transition-all duration-200 overflow-hidden ${msg.sender === 'USER'
+                    ? 'rounded-br-none hover:shadow-lg'
+                    : `${botBubbleBg} border rounded-bl-none hover:shadow-lg`
+                    }`}
                 >
                   {msg.sender === 'BOT' ? (
                     <div className="prose prose-sm max-w-none text-sm whitespace-pre-wrap break-words overflow-hidden">

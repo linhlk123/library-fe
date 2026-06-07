@@ -1437,7 +1437,7 @@
         {
           "name": "Get All DauSach",
           "request": {
-            "method": "GET",  
+            "method": "GET",
             "header": [
               {
                 "key": "Authorization",

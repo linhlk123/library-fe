@@ -5,28 +5,28 @@ import type { ThamSo } from '../../types';
 
 interface RegulationParams {
   // Reader Regulations
-  TUOI_TOI_THIEU: number;
-  TUOI_TOI_DA: number;
-  HAN_THE_DOC_GIA: number;
+  TuoiToiThieu: number;
+  TuoiToiDa: number;
+  ThoiHanThe: number;
   // Book Regulations
-  KHOANG_CACH_NAM_XB: number;
+  KhoangCachNamXB: number;
   // Borrowing Regulations
-  SO_NGAY_MUON_TOI_DA: number;
-  SO_SACH_MUON_TOI_DA: number;
+  SoNgayMuonToiDa: number;
+  SoSachMuonToiDa: number;
   // Financial Regulations
-  TIEN_PHAT_MOI_NGAY: number;
-  KIEM_TRA_SO_TIEN_THU: boolean;
+  TienPhatMoiNgay: number;
+  ApDungQDKiemTraSoTienThu: boolean;
 }
 
 const INITIAL_PARAMS: RegulationParams = {
-  TUOI_TOI_THIEU: 0,
-  TUOI_TOI_DA: 0,
-  HAN_THE_DOC_GIA: 0,
-  KHOANG_CACH_NAM_XB: 0,
-  SO_NGAY_MUON_TOI_DA: 0,
-  SO_SACH_MUON_TOI_DA: 0,
-  TIEN_PHAT_MOI_NGAY: 0,
-  KIEM_TRA_SO_TIEN_THU: false,
+  TuoiToiThieu: 18,
+  TuoiToiDa: 55,
+  ThoiHanThe: 0.5,
+  KhoangCachNamXB: 8,
+  SoNgayMuonToiDa: 4,
+  SoSachMuonToiDa: 5,
+  TienPhatMoiNgay: 1000,
+  ApDungQDKiemTraSoTienThu: false,
 };
 
 const RegulationsView = () => {
@@ -55,15 +55,16 @@ const RegulationsView = () => {
           });
 
           const newParams: RegulationParams = {
-            TUOI_TOI_THIEU: Number(thamsoMap['TUOI_TOI_THIEU']) || 0,
-            TUOI_TOI_DA: Number(thamsoMap['TUOI_TOI_DA']) || 0,
-            HAN_THE_DOC_GIA: Number(thamsoMap['HAN_THE_DOC_GIA']) || 0,
-            KHOANG_CACH_NAM_XB: Number(thamsoMap['KHOANG_CACH_NAM_XB']) || 0,
-            SO_NGAY_MUON_TOI_DA: Number(thamsoMap['SO_NGAY_MUON_TOI_DA']) || 0,
-            SO_SACH_MUON_TOI_DA: Number(thamsoMap['SO_SACH_MUON_TOI_DA']) || 0,
-            TIEN_PHAT_MOI_NGAY: Number(thamsoMap['TIEN_PHAT_MOI_NGAY']) || 0,
-            KIEM_TRA_SO_TIEN_THU: (thamsoMap['KIEM_TRA_SO_TIEN_THU'] === true ||
-              thamsoMap['KIEM_TRA_SO_TIEN_THU'] === 'true') ?? false,
+            TuoiToiThieu: Number(thamsoMap['TuoiToiThieu']) || INITIAL_PARAMS.TuoiToiThieu,
+            TuoiToiDa: Number(thamsoMap['TuoiToiDa']) || INITIAL_PARAMS.TuoiToiDa,
+            ThoiHanThe: Number(thamsoMap['ThoiHanThe']) || INITIAL_PARAMS.ThoiHanThe,
+            KhoangCachNamXB: Number(thamsoMap['KhoangCachNamXB']) || INITIAL_PARAMS.KhoangCachNamXB,
+            SoNgayMuonToiDa: Number(thamsoMap['SoNgayMuonToiDa']) || INITIAL_PARAMS.SoNgayMuonToiDa,
+            SoSachMuonToiDa: Number(thamsoMap['SoSachMuonToiDa']) || INITIAL_PARAMS.SoSachMuonToiDa,
+            TienPhatMoiNgay: Number(thamsoMap['TienPhatMoiNgay']) || INITIAL_PARAMS.TienPhatMoiNgay,
+            ApDungQDKiemTraSoTienThu: thamsoMap['ApDungQDKiemTraSoTienThu'] !== undefined
+              ? (thamsoMap['ApDungQDKiemTraSoTienThu'] === true || thamsoMap['ApDungQDKiemTraSoTienThu'] === 'true')
+              : INITIAL_PARAMS.ApDungQDKiemTraSoTienThu,
           };
 
           setParams(newParams);
@@ -98,7 +99,7 @@ const RegulationsView = () => {
 
       const responses = await Promise.all(
         updates.map((item) =>
-          regulationsApi.thamso.update(item.tenThamSo, { giaTri: item.giaTri })
+          regulationsApi.thamso.update(item.tenThamSo, { tenThamSo: item.tenThamSo, giaTri: item.giaTri })
         )
       );
 
@@ -150,9 +151,9 @@ const RegulationsView = () => {
                   min={0}
                   disabled={loading || submitting}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                  value={params.TUOI_TOI_THIEU}
+                  value={params.TuoiToiThieu}
                   onChange={(e) =>
-                    handleChange('TUOI_TOI_THIEU', Number(e.target.value))
+                    handleChange('TuoiToiThieu', Number(e.target.value))
                   }
                 />
               </label>
@@ -165,9 +166,9 @@ const RegulationsView = () => {
                   min={0}
                   disabled={loading || submitting}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                  value={params.TUOI_TOI_DA}
+                  value={params.TuoiToiDa}
                   onChange={(e) =>
-                    handleChange('TUOI_TOI_DA', Number(e.target.value))
+                    handleChange('TuoiToiDa', Number(e.target.value))
                   }
                 />
               </label>
@@ -180,9 +181,9 @@ const RegulationsView = () => {
                   min={0}
                   disabled={loading || submitting}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                  value={params.HAN_THE_DOC_GIA}
+                  value={params.ThoiHanThe}
                   onChange={(e) =>
-                    handleChange('HAN_THE_DOC_GIA', Number(e.target.value))
+                    handleChange('ThoiHanThe', Number(e.target.value))
                   }
                 />
               </label>
@@ -204,9 +205,9 @@ const RegulationsView = () => {
                   min={0}
                   disabled={loading || submitting}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                  value={params.KHOANG_CACH_NAM_XB}
+                  value={params.KhoangCachNamXB}
                   onChange={(e) =>
-                    handleChange('KHOANG_CACH_NAM_XB', Number(e.target.value))
+                    handleChange('KhoangCachNamXB', Number(e.target.value))
                   }
                 />
               </label>
@@ -231,9 +232,9 @@ const RegulationsView = () => {
                   min={0}
                   disabled={loading || submitting}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                  value={params.SO_NGAY_MUON_TOI_DA}
+                  value={params.SoNgayMuonToiDa}
                   onChange={(e) =>
-                    handleChange('SO_NGAY_MUON_TOI_DA', Number(e.target.value))
+                    handleChange('SoNgayMuonToiDa', Number(e.target.value))
                   }
                 />
               </label>
@@ -246,9 +247,9 @@ const RegulationsView = () => {
                   min={0}
                   disabled={loading || submitting}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                  value={params.SO_SACH_MUON_TOI_DA}
+                  value={params.SoSachMuonToiDa}
                   onChange={(e) =>
-                    handleChange('SO_SACH_MUON_TOI_DA', Number(e.target.value))
+                    handleChange('SoSachMuonToiDa', Number(e.target.value))
                   }
                 />
               </label>
@@ -270,9 +271,9 @@ const RegulationsView = () => {
                   min={0}
                   disabled={loading || submitting}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                  value={params.TIEN_PHAT_MOI_NGAY}
+                  value={params.TienPhatMoiNgay}
                   onChange={(e) =>
-                    handleChange('TIEN_PHAT_MOI_NGAY', Number(e.target.value))
+                    handleChange('TienPhatMoiNgay', Number(e.target.value))
                   }
                 />
               </label>
@@ -282,9 +283,9 @@ const RegulationsView = () => {
                 <input
                   type="checkbox"
                   disabled={loading || submitting}
-                  checked={params.KIEM_TRA_SO_TIEN_THU}
+                  checked={params.ApDungQDKiemTraSoTienThu}
                   onChange={(e) =>
-                    handleChange('KIEM_TRA_SO_TIEN_THU', e.target.checked)
+                    handleChange('ApDungQDKiemTraSoTienThu', e.target.checked)
                   }
                   className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500 cursor-pointer"
                 />

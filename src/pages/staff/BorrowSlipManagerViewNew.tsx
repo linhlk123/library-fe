@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Search, Edit2, Trash2 } from 'lucide-react';
+import { Search, Edit2, Trash2 } from 'lucide-react';
 import { staffApi } from '../../services/staffApi';
 import { useUIStore, useAuthStore } from '../../stores';
 import type { PhieuMuonTra } from '../../types';
@@ -56,13 +56,13 @@ export default function BorrowSlipManagerView() {
   const { token } = useAuthStore();
   const { addNotification } = useUIStore();
   const queryClient = useQueryClient();
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [selectedSlip, setSelectedSlip] = useState<PhieuMuonTraData | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [formData, setFormData] = useState<BorrowFormData>({
     maCuonSach: 0,
     maDocGia: '',
@@ -84,28 +84,15 @@ export default function BorrowSlipManagerView() {
 
   // Filter slips
   const filteredSlips = slips.filter(slip => {
-    const matchesSearch = 
+    const matchesSearch =
       slip.maDocGia?.includes(searchQuery.toLowerCase()) ||
       slip.soPhieu?.toString().includes(searchQuery);
-    
-    const matchesStatus = statusFilter === 'all' || 
+
+    const matchesStatus = statusFilter === 'all' ||
       slip.trangThai?.toUpperCase().replace(/\s+/g, '_') === statusFilter.toUpperCase().replace(/\s+/g, '_');
-    
+
     return matchesSearch && matchesStatus;
   });
-
-  const handleCreateNew = () => {
-    setSelectedSlip(null);
-    setFormData({
-      maCuonSach: 0,
-      maDocGia: '',
-      ngayMuon: new Date().toISOString().split('T')[0],
-      ngayPhaiTra: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      soNgayMuon: 0,
-      tienPhat: 0,
-    });
-    setShowForm(true);
-  };
 
   const handleSaveSlip = async () => {
     setIsSubmitting(true);
@@ -145,13 +132,13 @@ export default function BorrowSlipManagerView() {
           <h2 className="text-2xl font-bold text-slate-900">Quản Lý Phiếu Mượn</h2>
           <p className="text-slate-600 text-sm mt-1">Quản lý yêu cầu mượn sách từ độc giả</p>
         </div>
-        <button
+        {/* <button
           onClick={handleCreateNew}
           className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-lg shadow-lg shadow-emerald-200/30 transition-all"
         >
           <Plus size={20} />
           Tạo Phiếu Mượn
-        </button>
+        </button> */}
       </div>
 
       {/* Search & Filter */}
@@ -264,7 +251,7 @@ export default function BorrowSlipManagerView() {
               <h3 className="text-lg font-bold text-slate-900">
                 {selectedSlip ? 'Cập Nhật Phiếu Mượn' : 'Tạo Phiếu Mượn Mới'}
               </h3>
-              
+
               <div className="space-y-3">
                 <input
                   type="text"

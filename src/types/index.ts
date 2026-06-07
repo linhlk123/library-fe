@@ -94,6 +94,7 @@ export interface TheLoai {
 export interface TacGia {
   maTacGia: number;
   tenTacGia: string;
+  ngaySinh?: string;
 }
 
 export interface CTTacGia {
