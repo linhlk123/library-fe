@@ -8,7 +8,7 @@ import UserLayout, { type UserViewType } from './layouts/UserLayout';
 import StaffLayout from './layouts/StaffLayout';
 
 // Admin views
-import DashboardView from './pages/staff/DashboardView';
+//import DashboardView from './pages/staff/DashboardView';
 import ReaderCardView from './pages/ReaderCard';
 import ReaderTypesView from './pages/ReaderTypes'; // Đã thêm import
 import NewBookIntakeView from './pages/NewBook'; // Đã thêm import
@@ -98,7 +98,7 @@ function AppContent() {
     <>
       <StaffLayout currentView={viewToRender} onNavigate={setViewToRender}>
         <div className="max-w-7xl mx-auto">
-          {viewToRender === 'DASHBOARD' && canAccessView() && <DashboardView />}
+          {/* {viewToRender === 'DASHBOARD' && canAccessView() && <DashboardView />} */}
           {viewToRender === 'READER_CARD' && canAccessView() && <ReaderCardView />}
           {viewToRender === 'READER_TYPES' && canAccessView() && <ReaderTypesView />}
           {viewToRender === 'NEW_BOOK' && canAccessView() && <NewBookIntakeView />}

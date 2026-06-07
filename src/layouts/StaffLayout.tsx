@@ -50,7 +50,7 @@ interface StaffLayoutProps {
 
 // Đã cập nhật ID cho khớp với StaffViewType
 const navigationItems = [
-  { id: 'DASHBOARD', label: 'Bảng Điều Khiển', icon: BarChart3 },
+  //{ id: 'DASHBOARD', label: 'Bảng Điều Khiển', icon: BarChart3 },
   { id: 'CATALOG', label: 'Danh Mục Sách', icon: BookOpen },
   { id: 'NEW_BOOK', label: 'Nhập Sách Mới', icon: PlusCircle },
   { id: 'CATEGORIES', label: 'Thể Loại', icon: Tags },

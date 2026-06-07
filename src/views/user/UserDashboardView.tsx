@@ -114,12 +114,15 @@ const BookRecommendCard = ({ book }: { book: BookForUI }) => (
 export default function UserDashboardView() {
   const { user } = useAuthStore();
 
+  const maDocGia = user?.tenDangNhap; 
+  console.log('Mã độc giả (tenDangNhap):', maDocGia); // Debug log để kiểm tra giá trị mã độc giả
   // Fetch borrowings data
   const { data: borrowingsData, isLoading: borrowingsLoading } = useQuery({
-    queryKey: ['borrowings'],
-    queryFn: () => userApi.getAllPhieuMuonTra(),
+    queryKey: ['borrowings', maDocGia], // Gắn mã độc giả vào key để phân biệt cache
+    queryFn: () => userApi.getPhieuMuonByDocGia(maDocGia!),
+    enabled: !!maDocGia, // CHỈ GỌI API khi maDocGia đã có giá trị, tránh lỗi gửi undefined lên server
     retry: 1,
-  });
+  });;
 
   // Fetch books data for recommendations
   const { data: booksData, isLoading: booksLoading } = useQuery({

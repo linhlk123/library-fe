@@ -65,6 +65,10 @@ export const userApi = {
   getPhieuMuonTraDetail: (soPhieu: string) =>
     apiClient.get<ApiResponse<PhieuMuonTra>>(`/api/phieumuontra/${soPhieu}`),
 
+  getPhieuMuonByDocGia: (maDocGia: string) => {
+    return apiClient.get(`/api/phieumuontra/docgia/${maDocGia}`); 
+  },
+  
   getMyReaderCard: () =>
     apiClient.get<ApiResponse<ReaderCard>>('/api/docgia/my-card'),
 };

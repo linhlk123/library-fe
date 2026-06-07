@@ -5,9 +5,7 @@ import { useAuthStore } from '../stores';
 
 // In development, use relative URLs (Vite proxy handles it)
 // In production, use full backend URL
-const API_BASE_URL = import.meta.env.PROD 
-  ? (import.meta.env.VITE_API_URL || 'https://library-crbe.onrender.com')
-  : '';
+const API_BASE_URL = 'https://library-crbe.onrender.com';
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -31,14 +29,19 @@ export const setTokenStore = (store: typeof tokenStore) => {
 
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = useAuthStore.getState().token;
+    let token = localStorage.getItem('jwt_token');
+    
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      token = token.replace(/"/g, ''); // Đề phòng dính ngoặc kép
+      config.headers.set('Authorization', `Bearer ${token}`); 
     }
+    
     return config;
   },
   (error) => Promise.reject(error)
 );
+
+
 
 // let isRefreshing = false;
 // let failedQueue: Array<{
@@ -53,6 +56,7 @@ apiClient.interceptors.request.use(
 //   });
 //   failedQueue = [];
 // };
+
 
 const isAuthEndpoint = (url?: string) => {
   if (!url) return false;
